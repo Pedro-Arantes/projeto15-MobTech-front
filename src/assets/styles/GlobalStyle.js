@@ -29,6 +29,7 @@ const GlobalStyle = createGlobalStyle`
 	}
 
 	body {
+		background-color: #483d8b;
 		line-height: 1;
 	}
 

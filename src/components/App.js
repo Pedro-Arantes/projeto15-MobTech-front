@@ -5,6 +5,7 @@ import CartPage from "../pages/CartPage"
 import ChekoutPage from "../pages/ChekoutPage"
 import DataProvider from "../context/Auth";
 
+
 function App() {
   return (
     <BrowserRouter>

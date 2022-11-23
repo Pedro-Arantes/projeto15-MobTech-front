@@ -50,6 +50,14 @@ const GlobalStyle = createGlobalStyle`
 		border-collapse: collapse;
 		border-spacing: 0;
 	}
+	*{
+    box-sizing: border-box;
+	}
+body{
+	background-color: #483d8b;
+	
+}
 `;
+
 
 export default GlobalStyle;

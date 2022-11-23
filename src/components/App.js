@@ -7,6 +7,7 @@ import DataProvider from "../context/Auth";
 import Login from '../components/Login'
 import Cadastro from '../components/Cadastro'
 
+
 function App() {
   return (
     <BrowserRouter>

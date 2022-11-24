@@ -1,8 +1,11 @@
+import { useState, useContext, useEffect } from 'react';
+
 import {  CartItemStyled, CartDescription,CounterDiv,CartContent } from "../assets/styles/CartStyle"
 import {FiTrash2} from  'react-icons/fi'
 
 export default function CartItem (){
 
+    
 
     return(
         <CartItemStyled>

@@ -8,8 +8,8 @@ flex-direction: column;
 justify-content: center;
 color: white;
 
-margin-top: 50px;
-
+margin-top: 100px;
+font-family: 'Montserrat', sans-serif;
 
 `
 export const CartStyled = styled.section`

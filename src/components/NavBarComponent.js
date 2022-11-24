@@ -1,9 +1,15 @@
 import { BsHeartFill, BsCart3, BsPersonCircle, BsSearch } from 'react-icons/bs';
+import { useState } from 'react';
+import Swal from 'sweetalert2'
 import styled from 'styled-components';
+import { useNavigate } from 'react-router-dom';
 
 import logo from '../assets/images/borsalino.png';
 
 export default function NavBarComponent() {
+
+  const navigate = useNavigate();
+  const [inputSearch, setInputSearch] = useState('');
 
   return (
     <StyledNavBarComponent>
@@ -12,10 +18,58 @@ export default function NavBarComponent() {
         MobTech
       </Logo>
       <Menu>
-        <button><BsSearch /></button>
-        <button><BsHeartFill /></button>
-        <button><BsCart3 /></button>
-        <button><BsPersonCircle /></button>
+        <button
+          title='Pesquisar'
+          onClick={async () => {
+            const { value: ipAddress } = await Swal.fire({
+              title: 'Pesquisar seu novo smartphone',
+              iconHtml: '<img src="https://images2.imgbox.com/66/f7/NCiVe5di_o.png"',
+              input: 'text',
+              inputLabel: 'Pode inserir marca, modelo ou versão',
+              confirmButtonText: 'pesquisar',
+              cancelButtonText: 'cancelar',
+              inputValue: inputSearch,
+              showCancelButton: true,
+              inputValidator: (value) => {
+                if (!value) {
+                  return 'Você precisa inserir algo para pesquisar!';
+                } else {
+                  setInputSearch(value);
+                  navigate('/pesquisa');
+                }
+              }
+            });
+          }}
+        >
+          <BsSearch />
+        </button>
+
+        <button
+          title='Favoritos'
+          onClick={() => {
+            navigate('/favoritos');
+          }}
+        >
+          <BsHeartFill />
+        </button>
+
+        <button
+          title='Carrinho'
+          onClick={() => {
+            navigate('/carrinho');
+          }}
+        >
+          <BsCart3 />
+        </button>
+
+        <button
+          title='Usuário'
+          onClick={() => {
+            navigate('/usuario');
+          }}
+        >
+          <BsPersonCircle />
+        </button>
       </Menu>
     </StyledNavBarComponent>
   );
@@ -40,30 +94,51 @@ const StyledNavBarComponent = styled.nav`
 `;
 
 const Logo = styled.button`
+  width: 60%;
   display: flex;
   align-items: center;
   font-family: 'Audiowide', cursive;
-  font-size: 40px;
+  font-size: 30px;
   color: #73C800;
   background-color: transparent;
   outline: none;
   border: none;
+  margin-right: 15px;
 
   img {
+    margin: 0px 2px;
     width: 50px;
   }
 `;
 
 const Menu = styled.section`
+  width: 40%;
+  height: 100%;
+  display: flex;
+  justify-content: flex-end;
+
   button {
     background-color: transparent;
     outline: none;
     border: none;
-    margin: 0px 3px;
+    margin: 0px 2px;
+    transition: 1s;
+  
+    &:hover {
+      transform: scale(1.3);
+      cursor: pointer;
+
+      svg {
+        color: #73C800;
+      }
+    }
   }
 
   svg {
-    font-size: 20px;
+    width: 100%;
+    max-width: 25px;
+    height: 100%;
+    max-height: 25px;
     color: #FFFFFF;
   }
 `;

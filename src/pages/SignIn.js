@@ -7,7 +7,7 @@ import { DataContext } from "../context/Auth";
 
 
 
-export default function Login(){
+export default function SignInComponent(){
 
     const { setToken } = useContext(DataContext);
     const [boolButton, setBoolButton] = useState(false)
@@ -24,10 +24,10 @@ export default function Login(){
         event.preventDefault();
         setBoolButton(true)
         
-            const URL = "http://localhost:5000/login"
+            const URL = "http://localhost:5000/sign-in"
             
             const body = form;
-            console.log(body, "body que está sendo enviado pelo post /login")
+            console.log(body, "body que está sendo enviado pelo post /sign-in")
             const promise = axios.post(URL, body)
 
             promise.then((res) => {

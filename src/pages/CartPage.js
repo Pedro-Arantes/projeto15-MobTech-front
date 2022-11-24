@@ -8,10 +8,10 @@ import NavBarComponent from "../components/NavBarComponent";
 
 export default function CartPage() {
 
-    const [total, setTotal] = useState("")
+    
     const [update,setUpdate] = useState("")
-    const { setCart,cartArray} = useContext(DataContext)
-    const array = [1,2,3,4,5,6,7]
+    const { setCart,cartArray,total,setTotal} = useContext(DataContext)
+
     const navigate = useNavigate();
     const token = "540e441c-9227-4749-ba22-9fe8204e7dfc"
     const NextPage = ()=>{

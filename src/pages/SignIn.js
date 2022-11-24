@@ -130,7 +130,7 @@ const Form = styled.form`
         &:disabled{
             color: #52B6FF;
         }
-    
+    }
 `
 const BounceAnimation = keyframes`
   0% { margin-bottom: 0; }

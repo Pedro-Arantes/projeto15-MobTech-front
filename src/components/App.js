@@ -4,9 +4,8 @@ import HomePage from "../pages/HomePage"
 import CartPage from "../pages/CartPage"
 import ChekoutPage from "../pages/ChekoutPage"
 import DataProvider from "../context/Auth";
-import Login from '../components/Login'
-import Cadastro from '../components/Cadastro'
-
+import SignInComponent from '../pages/SignIn'
+import SignUpComponent from '../pages/SignUp'
 
 function App() {
   return (
@@ -16,8 +15,8 @@ function App() {
       <DataProvider>
         <Routes>
           <Route path="/" element={<HomePage />} />
-          <Route path="/cadastro" element={<Cadastro />} />
-          <Route path="/login" element={<Login />} />
+          <Route path="/cadastro" element={<SignUpComponent />} />
+          <Route path="/login" element={<SignInComponent/>} />
           <Route path="/carrinho" element={<CartPage />} />
           <Route path="/compra" element={<ChekoutPage />} />
         </Routes>

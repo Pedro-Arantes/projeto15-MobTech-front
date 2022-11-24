@@ -8,7 +8,7 @@ import mob from "../assets/images/mob.png"
 
 
 
-export default function Cadastro(){
+export default function SignUpComponent(){
 
     const [form, setForm] = useState({ name: "", email: "", password: "", passwordConfirm: ""})
     const [boolButton, setBoolButton] = useState(false)

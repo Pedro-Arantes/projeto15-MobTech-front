@@ -9,15 +9,51 @@ import {BsTelephone} from  'react-icons/bs'
 import {HiOutlineMapPin} from  'react-icons/hi2'
 import Swal from 'sweetalert2'
 
+
 export default function CartPage() {
     const { total} = useContext(DataContext)
+    const [tell,setTell] = useState("")
+    const [adress,setAdress] = useState("")
+    const navigate = useNavigate();
+    const token = "540e441c-9227-4749-ba22-9fe8204e7dfc"
 
     const FinishBuy = (stat) =>{
 
         if (stat === "buy") {
-            Swal.fire({
-                icon: "success",
-              });
+
+              const postPurchase = () =>{
+                const URL = 'http://localhost:5000/purchase'
+
+                const obj = {
+                    adress,
+                    tell,
+                    total
+                }
+                const config = {
+                    headers: {
+                        Authorization: `Bearer ${token}`
+                    }
+                }
+        
+                const tratarSucesso = (resposta) => {
+                    //console.log(resposta)
+                    Swal.fire({
+                        icon: "success",
+                      });  
+                    navigate("/")
+                }
+        
+                const tratarErro = (resp) => {
+                    console.log(resp.message)
+                    const re = resp.message
+                    Swal.fire({text: re,})
+                    navigate("/compra")
+                }
+                const requisicao = axios.post(URL, obj, config);
+                requisicao.then(tratarSucesso)
+                requisicao.catch(tratarErro)
+              }
+              postPurchase()
         }else{
             Swal.fire({
                 icon: "error",
@@ -31,11 +67,11 @@ export default function CartPage() {
             <FormCheckout>
                 <div>
                     <BsTelephone/>
-                    <input placeholder="Tel Contato"></input>
+                    <input required placeholder="Tel Contato" value={tell} onChange={e => setTell(e.target.value)}></input>
                 </div>
                 <div>
                     <HiOutlineMapPin/>
-                    <input placeholder="Endereço"></input>
+                    <input required placeholder="Endereço" value={adress} onChange={e => setAdress(e.target.value)}></input>
                 </div>
                 
                 

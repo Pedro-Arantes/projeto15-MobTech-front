@@ -32,7 +32,7 @@ export default function SignInComponent(){
 
             promise.then((res) => {
                 setToken(res.data[0].token)
-                navigate("/login")
+                navigate("/")
             })
 
             promise.catch((err) => {

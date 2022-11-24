@@ -18,7 +18,20 @@ export default function CartPage() {
         //verificar se o carrinho está vazio
         navigate("/compra")
     }
-
+    
+    const calcTotal = (array) =>{
+        const arr= array?.map((item)=> item.price )
+        const arrAmount= array?.map((item)=> item.amount )
+        
+        let tot = 0;
+        for (let i = 0; i < arr.length; i++) {
+            const num = Number(arr[i]) * Number(arrAmount[i]);
+            
+            tot = tot + Number(num)
+        }
+        
+        setTotal(tot)
+    }
     useEffect(()=>{
         const getCart = ()=>{
 
@@ -33,6 +46,7 @@ export default function CartPage() {
                 const dataArray = resp.data.cart
                 
                 setCart(dataArray)
+                calcTotal(dataArray)
             }
 
             const tratarErro = (resp) => {
@@ -49,6 +63,11 @@ export default function CartPage() {
         getCart()
     },[update])
 
+    useEffect(() => {
+        const interval = setInterval(() => calcTotal(cartArray), 1000);
+        return  clearInterval(interval);
+      }, []);
+
     return (
         <MainStyled>
             <NavBarComponent/>
@@ -60,7 +79,7 @@ export default function CartPage() {
             <BalanceStyled>
                 <div>
                     <p>Total</p>
-                    <p>$1000.00</p>
+                    <p>{total.toLocaleString('pt-BR',{style: 'currency', currency: 'BRL'})}</p>
                 </div>
                 
                 <button onClick={NextPage}>Comprar</button>

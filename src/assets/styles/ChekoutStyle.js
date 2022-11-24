@@ -1,13 +1,13 @@
 import styled from 'styled-components';
 
 export const FormCheckout = styled.form`
-
+width: 100%;
 display: flex;
-gap: 10px;
+gap: 20px;
 flex-direction: column;
-margin-right: auto;
-margin-left: auto;
-height: 100%;
+align-items: center;
+justify-content: flex-start;
+height: 50%;
 
 font-size: 28px;
 color: #DDFF0D;
@@ -26,6 +26,7 @@ input{
 }
 
 div{
+    width: 80%;
     display: flex;
     gap: 15px;
     align-items: center;

@@ -1,15 +1,17 @@
 import { BsHeartFill, BsCart3, BsPersonCircle, BsSearch } from 'react-icons/bs';
-import { useState } from 'react';
-import Swal from 'sweetalert2'
+import { useState, useContext } from 'react';
+import Swal from 'sweetalert2';
 import styled from 'styled-components';
 import { useNavigate } from 'react-router-dom';
 
 import logo from '../assets/images/borsalino.png';
+import { SearchContext } from '../context/search';
 
 export default function NavBarComponent() {
 
   const navigate = useNavigate();
-  const [inputSearch, setInputSearch] = useState('');
+  const { searchQuestion, setSearchQuestion } = useContext(SearchContext);
+  const [form, setForm] = useState('');
 
   return (
     <StyledNavBarComponent>
@@ -21,21 +23,22 @@ export default function NavBarComponent() {
         <button
           title='Pesquisar'
           onClick={async () => {
-            const { value: ipAddress } = await Swal.fire({
+            await Swal.fire({
               title: 'Pesquisar seu novo smartphone',
               iconHtml: '<img src="https://images2.imgbox.com/66/f7/NCiVe5di_o.png"',
               input: 'text',
               inputLabel: 'Pode inserir marca, modelo ou versão',
               confirmButtonText: 'pesquisar',
               cancelButtonText: 'cancelar',
-              inputValue: inputSearch,
+              inputValue: form,
               showCancelButton: true,
               inputValidator: (value) => {
                 if (!value) {
-                  return 'Você precisa inserir algo para pesquisar!';
+                  setSearchQuestion('');
                 } else {
-                  setInputSearch(value);
-                  navigate('/pesquisa');
+                  setSearchQuestion(value.trim());
+                  setForm('');
+                  navigate('/');
                 }
               }
             });

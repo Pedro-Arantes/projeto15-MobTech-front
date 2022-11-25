@@ -10,15 +10,20 @@ export default function CartPage() {
 
     
     const [update,setUpdate] = useState("")
-    const { setCart,cartArray,total,setTotal,token} = useContext(DataContext)
+    const[test,setTeste]=useState("")
+    const { setCart,cartArray,total,setTotal,} = useContext(DataContext)
 
     const navigate = useNavigate();
-    //const token = "540e441c-9227-4749-ba22-9fe8204e7dfc"
+    const token = "540e441c-9227-4749-ba22-9fe8204e7dfc"
     const NextPage = ()=>{
         //verificar se o carrinho está vazio
-        navigate("/compra")
+        if (cartArray.length<1) {
+            navigate("/")
+        }else{
+            navigate("/compra")
+        }
+        
     }
-    
     const calcTotal = (array) =>{
         const arr= array?.map((item)=> item.price )
         const arrAmount= array?.map((item)=> item.amount )
@@ -32,6 +37,8 @@ export default function CartPage() {
         
         setTotal(tot)
     }
+    
+    
     useEffect(()=>{
         const getCart = ()=>{
 
@@ -44,9 +51,9 @@ export default function CartPage() {
             const tratarSucesso = (resp) => {
                
                 const dataArray = resp.data.cart
-                
-                setCart(dataArray)
                 calcTotal(dataArray)
+                setCart(dataArray)
+               
             }
 
             const tratarErro = (resp) => {
@@ -61,8 +68,9 @@ export default function CartPage() {
             req.catch(tratarErro)
         }
         getCart()
-    },[update])
-
+    },[update,test])
+    console.log(update)
+    
     useEffect(() => {
         const interval = setInterval(() => calcTotal(cartArray), 1000);
         return  clearInterval(interval);
@@ -73,7 +81,7 @@ export default function CartPage() {
             <NavBarComponent/>
             <CartStyled>
                 <h1>Bem vindo ao seu carrinho!</h1>
-                {cartArray?.map((item,id)=><CartItem navigate={navigate} setUpdate={setUpdate} objt={item} token={token}key={id}/>)}
+                {cartArray?.map((item,id)=><CartItem navigate={navigate} setUpdate={setUpdate} setTeste={setTeste} teste={test} objt={item} token={token}key={id}/>)}
                 
             </CartStyled>
             <BalanceStyled>

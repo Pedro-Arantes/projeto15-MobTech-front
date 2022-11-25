@@ -1,17 +1,34 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { TailSpin } from 'react-loader-spinner';
 import { BsStarHalf } from 'react-icons/bs';
 import styled from 'styled-components';
+import axios from 'axios';
+import Swal from 'sweetalert2';
 import InfiniteScroll from 'react-infinite-scroll-component';
 
 import NavBarComponent from '../components/NavBarComponent.js';
 
 export default function HomePage() {
 
-  const response = [];
+  const [products, setProducts] = useState([]);
+  const [featuredProducts, setFeaturedProducts] = useState([])
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(false);
+  const [refresh, setRefresh] = useState(0);
 
-  const [products, setProducts] = useState(response);
-  const [featuredProducts, setFeaturedProducts] = useState(response.filter(product => product.featuredProduct))
+  useEffect(() => {
+    setLoading(true);
+    axios.get('http://localhost:5000/')
+      .then(res => {
+        setProducts(res.data);
+        setFeaturedProducts(res.data.filter(product => product.featuredProduct));
+        setLoading(false);
+      })
+      .catch(() => {
+        setLoading(false);
+        setError(true);
+      });
+  }, [refresh]);
 
   function fetchMoreData() {
 
@@ -30,64 +47,103 @@ export default function HomePage() {
     );
   }
 
-  return (
-    <StyledHome>
-      <NavBarComponent />
-      <StyledContent>
-        <InfiniteScroll
-          dataLength={products.length}
-          next={fetchMoreData}
-          hasMore={true}
-          loader={messageLoader()}
-        >
-          <StyledfeaturedProducts>
-            {featuredProducts.map((product, index) => {
-              return (
-                <StyledfeaturedProduct key={index}>
-                  <div>
+  async function alertError() {
+    await (Swal.fire({
+      icon: 'error',
+      title: 'Oops...',
+      text: 'Ocorreu um erro ao carregar os produtos!',
+      confirmButtonText: 'TENTAR NOVAMENTE',
+    })).then(() => {
+      setRefresh(Math.random());
+      setError(false);
+    })
+  };
+
+  if (loading) {
+    return (
+      <StyledHome>
+        <NavBarComponent />
+        <StyledContent loadingProp={loading}>
+          <StyledLoader>
+            Um momento, por favor...
+            <TailSpin
+              height='40'
+              width='40'
+              color='#73C800'
+            />
+          </StyledLoader>
+        </StyledContent>
+      </StyledHome>
+    );
+  } else if (error) {
+    alertError();
+    return (
+      <StyledHome>
+        <NavBarComponent />
+        <StyledContent loadingProp={loading}>
+        </StyledContent>
+      </StyledHome>
+    );
+  } else {
+    return (
+      <StyledHome>
+        <NavBarComponent />
+        <StyledContent loadingProp={loading}>
+          <InfiniteScroll
+            dataLength={products.length}
+            next={fetchMoreData}
+            hasMore={true}
+            loader={messageLoader()}
+          >
+            <StyledfeaturedProducts>
+              {featuredProducts.map((product, index) => {
+                return (
+                  <StyledfeaturedProduct key={index}>
                     <div>
-                      <h1>{product.model}</h1>
-                      <h2>{product.version}</h2>
+                      <div>
+                        <h1>{product.model}</h1>
+                        <h2>{product.version}</h2>
+                      </div>
+                      <button>Ver detalhes</button>
                     </div>
-                    <button>Ver detalhes</button>
-                  </div>
-                  <img
-                    src={product.image_URL}
-                    alt={`Foto ${product.model} ${product.version}`}
-                  />
-                </StyledfeaturedProduct>
-              );
-            })}
-          </StyledfeaturedProducts>
-          <StyledProducts>
-            {products.map((product, index) => {
-              return (
-                <StyledProduct key={index}>
-                  <StyledReviews>
-                    <BsStarHalf />
-                    <span>{product.reviews}</span>
-                  </StyledReviews>
-                  <img
-                    src={product.image_URL}
-                    alt={`Foto ${product.model} ${product.version}`}
-                  />
-                  <StyledModelPrice>
-                    <h1>{product.model}</h1>
-                    <h2>{Number(product.price)
-                      .toLocaleString(
-                        'pt-BR',
-                        { style: 'currency', currency: 'BRL' }
-                      )}
-                    </h2>
-                  </StyledModelPrice>
-                </StyledProduct>
-              );
-            })}
-          </StyledProducts>
-        </InfiniteScroll>
-      </StyledContent>
-    </StyledHome>
-  );
+                    <img
+                      src={product.image_URL}
+                      alt={`Foto ${product.model} ${product.version}`}
+                    />
+                  </StyledfeaturedProduct>
+                );
+              })}
+            </StyledfeaturedProducts>
+            <StyledProducts>
+              {products.map((product, index) => {
+                return (
+                  <StyledProduct key={index}>
+                    <StyledReviews>
+                      <BsStarHalf />
+                      <span>{product.reviews}</span>
+                    </StyledReviews>
+                    <img
+                      src={product.image_URL}
+                      alt={`Foto ${product.model} ${product.version}`}
+                    />
+                    <StyledModelPrice>
+                      <h1>{product.model}</h1>
+                      <h2>{Number(product.price)
+                        .toLocaleString(
+                          'pt-BR',
+                          { style: 'currency', currency: 'BRL' }
+                        )}
+                      </h2>
+                    </StyledModelPrice>
+                  </StyledProduct>
+                );
+              })}
+            </StyledProducts>
+          </InfiniteScroll>
+        </StyledContent>
+      </StyledHome>
+    );
+  }
 }
 
 const StyledHome = styled.main`
@@ -111,6 +167,10 @@ const StyledContent = styled.section`
   font-size: 15px;
   line-height: 17px;
   color: #FFFFFF;
+  display: flex;
+  flex-direction: column;
+  align-items: ${props => props.loadingProp ? 'center' : 'default'};
+  justify-content: ${props => props.loadingProp ? 'center' : 'default'};
 `;
 
 const StyledfeaturedProducts = styled.section`
@@ -216,8 +276,8 @@ const StyledProduct = styled.button`
   box-sizing: border-box;
 
   > img {
-    width: 70px;
-    height: 130px;
+    width: 100%;
+    height: 60%;
     object-fit: contain;
     overflow: hidden;
     margin: 8px 0px;

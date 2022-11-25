@@ -1,6 +1,6 @@
 import { BsHeartFill, BsCart3, BsPersonCircle, BsSearch } from 'react-icons/bs';
 import { useState } from 'react';
-import Swal from 'sweetalert2'
+import Swal from 'sweetalert2';
 import styled from 'styled-components';
 import { useNavigate } from 'react-router-dom';
 
@@ -21,7 +21,7 @@ export default function NavBarComponent() {
         <button
           title='Pesquisar'
           onClick={async () => {
-            const { value: ipAddress } = await Swal.fire({
+            await Swal.fire({
               title: 'Pesquisar seu novo smartphone',
               iconHtml: '<img src="https://images2.imgbox.com/66/f7/NCiVe5di_o.png"',
               input: 'text',

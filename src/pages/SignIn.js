@@ -1,80 +1,64 @@
 import styled, { keyframes } from "styled-components";
 import axios from "axios"
-import { useState } from "react"
+import { useContext, useState } from "react"
 import { Link, useNavigate} from 'react-router-dom';
-import mob from "../assets/images/mob.png"
+import { DataContext } from "../context/Auth";
 
 
 
 
+export default function SignInComponent(){
 
-export default function Cadastro(){
-
-    const [form, setForm] = useState({ name: "", email: "", password: "", passwordConfirm: ""})
+    const { setToken } = useContext(DataContext);
     const [boolButton, setBoolButton] = useState(false)
+    const [form, setForm] = useState({ email: "", password: "" })
     const navigate = useNavigate();
 
     function handleForm(e) {
-        e.preventDefault();
-        const {name, value} = e.target
-        setForm({...form, [name]: value})
+        const { name, value } = e.target
+        setForm({ ...form, [name]: value })
         
-      }
+    }
 
-    function fazerCadastro(event) {
+    function fazerLogin(event) {
         event.preventDefault();
         setBoolButton(true)
-        console.log(form.password, form.passwordConfirm, "password e passwordConfirm")
-        if (form.password === form.passwordConfirm) {
-            const URL = "http://localhost:5000/sign-up"
+        
+            const URL = "http://localhost:5000/sign-in"
             
-            const body = {
-                name: form.name,
-                email: form.email,
-                password: form.password
-            }
-            console.log(body, "body que está sendo enviado pelo post /sign-up")
+            const body = form;
+            console.log(body, "body que está sendo enviado pelo post /sign-in")
             const promise = axios.post(URL, body)
 
             promise.then((res) => {
-                navigate("/login")
+                setToken(res.data[0].token)
+                navigate("/")
             })
 
             promise.catch((err) => {
-                alert(err)
+                window.alert('Usuário não encontrado ou já está logado')
                 console.log(err)
                 setBoolButton(false)
             })
-        }else{
-            window.alert("As senhas não equivalem!")
-            setBoolButton(false)
-        }
-
     }
 
+    
 
     return (
         <Fundo>
-            
-            <Titulo>
-                MobTech
-               
-            </Titulo>
-            <Form onSubmit={fazerCadastro}>
-                <input onChange={handleForm} name="name" required type="text" placeholder="nome"></input>
-                <input onChange={handleForm} name="email" required type="email" placeholder="email"></input>
-                <input onChange={handleForm} name="password" required type="password" placeholder="senha"></input>
-                <input onChange={handleForm} name="passwordConfirm" required type="password" placeholder="confirmar senha"></input>
+            <Titulo>MobTech</Titulo>
+            <Form onSubmit={fazerLogin} >
+                <input disabled={boolButton} onChange={handleForm} name="email" required type="email" placeholder="email"></input>
+                <input disabled={boolButton} onChange={handleForm} name="password" required type="password" placeholder="senha"></input>
                 <button disabled={boolButton} type="submit" >
-                    {(boolButton === false) ? "Cadastrar" : <DotWrapper> <Dot delay="0s" /> <Dot delay=".1s" /> <Dot delay=".2s" /> </DotWrapper>}
+                    {(boolButton === false) ? "Logar" : <DotWrapper> <Dot delay="0s" /> <Dot delay=".1s" /> <Dot delay=".2s" /> </DotWrapper>}
                 </button>
             </Form>
-            <Link to={`/`}> <p>Já tem uma conta? Faça login agora!</p> </Link>
+            <Link to={`/cadastro`}> <p>Ainda não tem uma conta? Cadastre-se!</p> </Link>
         </Fundo>
     )
 
 }
-
 
 const Titulo = styled.div`
 font-family: 'Audiowide';
@@ -82,7 +66,7 @@ font-size: 400%;
 font-weight: bold;
 color: #DDFF0D;
 padding-bottom: 1%;
-margin-bottom: 10px;
+margin-bottom: 15px;
 `
 const Chapeu = styled.img`
 width: 10px;
@@ -146,7 +130,7 @@ const Form = styled.form`
         &:disabled{
             color: #52B6FF;
         }
-    
+    }
 `
 const BounceAnimation = keyframes`
   0% { margin-bottom: 0; }

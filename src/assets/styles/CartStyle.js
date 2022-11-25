@@ -8,8 +8,8 @@ flex-direction: column;
 justify-content: center;
 color: white;
 
-margin-top: 50px;
-
+margin-top: 100px;
+font-family: 'Montserrat', sans-serif;
 
 `
 export const CartStyled = styled.section`
@@ -20,6 +20,7 @@ align-items: center;
 gap: 20px;
 
 height: 50%;
+margin-bottom: 150px;
 
 h1{
     font-size: 20px;
@@ -45,7 +46,9 @@ font-weight: 600;
 position: fixed;
 bottom: 0;
 
+background-color: #5a4cae;
 box-shadow: 0px 15px 20px rgba(0, 0, 0, 0.3);
+opacity: 0.9;
 div{
     width: 100%;
 

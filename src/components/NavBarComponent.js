@@ -1,14 +1,17 @@
-import { BsHeartFill, BsCart3, BsPersonCircle, BsSearch } from 'react-icons/bs';
+import { BsHeartFill, BsCart3, BsSearch } from 'react-icons/bs';
 import { useState, useContext } from 'react';
 import Swal from 'sweetalert2';
 import styled from 'styled-components';
 import { useNavigate } from 'react-router-dom';
 
 import logo from '../assets/images/borsalino.png';
-import { SearchContext } from '../context/search';
+import person from '../assets/images/person-login-icon.png';
+import { SearchContext } from '../context/search.js';
+import { DataContext } from '../context/Auth.js';
 
 export default function NavBarComponent() {
 
+  const { user } = useContext(DataContext);
   const navigate = useNavigate();
   const { setSearchQuestion } = useContext(SearchContext);
   const [form, setForm] = useState('');
@@ -50,7 +53,7 @@ export default function NavBarComponent() {
         <button
           title='Favoritos'
           onClick={() => {
-            navigate('/favoritos');
+            user.id ? navigate('/favoritos') : navigate('/login');
           }}
         >
           <BsHeartFill />
@@ -59,7 +62,7 @@ export default function NavBarComponent() {
         <button
           title='Carrinho'
           onClick={() => {
-            navigate('/carrinho');
+            user.id ? navigate('/carrinho') : navigate('/login');
           }}
         >
           <BsCart3 />
@@ -68,10 +71,12 @@ export default function NavBarComponent() {
         <button
           title='Usuário'
           onClick={() => {
-            navigate('/usuario');
+            user.id ? navigate('/usuario') : navigate('/login');
           }}
         >
-          <BsPersonCircle />
+          <StyledProfile>
+            <img src={user.image || person} alt={`Imagem ${user.name || 'visitante'}`} />
+          </StyledProfile>
         </button>
       </Menu>
     </StyledNavBarComponent>
@@ -121,6 +126,8 @@ const Menu = styled.section`
   justify-content: flex-end;
 
   button {
+    width: 40px;
+    height: 100%;
     background-color: transparent;
     outline: none;
     border: none;
@@ -143,5 +150,30 @@ const Menu = styled.section`
     height: 100%;
     max-height: 25px;
     color: #FFFFFF;
+  }
+`;
+
+const StyledProfile = styled.div`
+  width: 30px;
+  height: 30px;
+  background-color: #FFFFFF;
+  outline: none;
+  border: none;
+  border-radius: 15px;
+  transition: 1s;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  img {
+    width: 26px;
+    height: 26px;
+    border-radius: 13px;
+  }
+
+  &:hover {
+    transform: scale(1.05);
+    background-color: #73C800;
+    cursor: pointer;
   }
 `;

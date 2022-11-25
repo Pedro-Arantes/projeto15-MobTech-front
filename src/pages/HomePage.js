@@ -15,6 +15,7 @@ export default function HomePage() {
 
   const HOME_URL = 'http://localhost:5000';
   const { searchQuestion, setSearchQuestion } = useContext(SearchContext);
+
   const [products, setProducts] = useState([]);
   const [featuredProducts, setFeaturedProducts] = useState([])
   const [loading, setLoading] = useState(true);
@@ -106,7 +107,9 @@ export default function HomePage() {
                 {' resultados:'}
               </StyledMessageSearch>
               :
-              <FeaturedProductsComponent featuredProducts={featuredProducts} />
+              <FeaturedProductsComponent 
+                featuredProducts={featuredProducts} 
+              />
           }
           <InfiniteScroll
             dataLength={products.length}
@@ -207,7 +210,7 @@ const ButtonReset = styled.button`
   outline: none;
   border-radius: 15px;
   padding: 5px;
-  transition: 1s;
+  transition: .7s;
 
   > svg {
     margin: 10px

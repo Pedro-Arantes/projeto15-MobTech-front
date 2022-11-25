@@ -1,4 +1,3 @@
-
 import styled from 'styled-components';
 
 export default function FeaturedProductsComponent({ featuredProducts }) {
@@ -67,6 +66,7 @@ const StyledfeaturedProduct = styled.div`
     width: 50%;
     height: 80%;
     display: flex;
+    padding: 5px;
     flex-direction: column;
     align-items: center;
     justify-content: space-around;
@@ -83,6 +83,11 @@ const StyledfeaturedProduct = styled.div`
       border-radius: 15px;
       border: none;
       outline: none;
+      transition: .7s;
+
+      &:hover {
+        transform: scale(1.1);
+      }
     }
 
     > div > h1 {

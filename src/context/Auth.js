@@ -5,7 +5,7 @@ export const DataContext = createContext({})
 function DataProvider ({children}){
 
 const [data,setData] = useState("")
-const [user,setUser] = useState("")
+const [user,setUser] = useState({})
 const [token, setToken] = useState("")
 
 

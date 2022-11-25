@@ -1,6 +1,6 @@
 import { useState, useEffect, useContext } from 'react';
 import { TailSpin } from 'react-loader-spinner';
-import { BsStarHalf, BsArrowLeftCircleFill } from 'react-icons/bs';
+import { BsArrowLeftCircleFill } from 'react-icons/bs';
 import styled from 'styled-components';
 import axios from 'axios';
 import Swal from 'sweetalert2';
@@ -8,6 +8,8 @@ import InfiniteScroll from 'react-infinite-scroll-component';
 
 import NavBarComponent from '../components/NavBarComponent.js';
 import { SearchContext } from '../context/search.js';
+import FeaturedProductsComponent from '../components/FeaturedProductsComponent.js';
+import ProductsComponent from '../components/ProductsComponent.js';
 
 export default function HomePage() {
 
@@ -18,13 +20,15 @@ export default function HomePage() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(false);
   const [refresh, setRefresh] = useState(0);
+  const [favorites, setFavorites] = useState([]);
+  const [cart, setCart] = useState([]);
 
   useEffect(() => {
     setLoading(true);
     axios.get(`${HOME_URL}/?q=${searchQuestion}`)
       .then(res => {
         setProducts(res.data);
-        setFeaturedProducts(res.data.filter(product => product.featuredProduct));
+        setFeaturedProducts(res.data.filter(product => product.featuredProduct === 'true'));
         setLoading(false);
       })
       .catch(() => {
@@ -92,70 +96,41 @@ export default function HomePage() {
       <StyledHome>
         <NavBarComponent />
         <StyledContent loadingProp={loading}>
-          {(searchQuestion.length > 0 ?
-            <StyledMessageSearch>
-              A sua busca por <span>'{searchQuestion}'</span> obteve <span>{products.length}</span> resultados:
-            </StyledMessageSearch> :
-            <StyledfeaturedProducts>
-              {featuredProducts.map((product, index) => {
-                return (
-                  <StyledfeaturedProduct key={index}>
-                    <div>
-                      <div>
-                        <h1>{product.model}</h1>
-                        <h2>{product.version}</h2>
-                      </div>
-                      <button>Ver detalhes</button>
-                    </div>
-                    <img
-                      src={product.image_URL}
-                      alt={`Foto ${product.model} ${product.version}`}
-                    />
-                  </StyledfeaturedProduct>
-                );
-              })}
-            </StyledfeaturedProducts>
-          )}
+          {
+            searchQuestion.length > 0 ?
+              <StyledMessageSearch>
+                {'A sua busca por '}
+                <span>'{searchQuestion}'</span>
+                {' obteve '}
+                <span>{products.length}</span>
+                {' resultados:'}
+              </StyledMessageSearch>
+              :
+              <FeaturedProductsComponent featuredProducts={featuredProducts} />
+          }
           <InfiniteScroll
             dataLength={products.length}
             next={fetchMoreData}
             hasMore={false}
             loader={messageLoader()}
           >
-            <StyledProducts>
-              {products.map((product, index) => {
-                return (
-                  <StyledProduct key={index}>
-                    <StyledReviews>
-                      <BsStarHalf />
-                      <span>{product.reviews}</span>
-                    </StyledReviews>
-                    <img
-                      src={product.image_URL}
-                      alt={`Foto ${product.model} ${product.version}`}
-                    />
-                    <StyledModelPrice>
-                      <h1>{product.model}</h1>
-                      <h2>{Number(product.price)
-                        .toLocaleString(
-                          'pt-BR',
-                          { style: 'currency', currency: 'BRL' }
-                        )}
-                      </h2>
-                    </StyledModelPrice>
-                  </StyledProduct>
-                );
-              })}
-
-            </StyledProducts>
+            <ProductsComponent 
+              products={products} 
+              favorites={favorites} 
+              setFavorites={setFavorites} 
+              cart={cart} 
+              setCart={setCart} 
+            />
           </InfiniteScroll>
-          {(searchQuestion.length > 0 ?
-            <ButtonReset onClick={() => setSearchQuestion('')}>
-              <BsArrowLeftCircleFill />
-              Voltar
-            </ButtonReset>
-            : ''
-          )}
+          {
+            searchQuestion.length > 0 ?
+              <ButtonReset onClick={() => setSearchQuestion('')}>
+                <BsArrowLeftCircleFill />
+                Voltar
+              </ButtonReset>
+              :
+              ''
+          }
         </StyledContent>
       </StyledHome>
     );
@@ -199,161 +174,6 @@ const StyledMessageSearch = styled.span`
 
   > span {
     color: #73C800;
-  }
-`;
-
-const StyledfeaturedProducts = styled.section`
-  width: 100%;
-  margin: 20px 0px;
-  display: flex;
-  overflow-x: auto;
-
-  &::-webkit-scrollbar {     
-    height: 9px;
-  }
-
-  &::-webkit-scrollbar-track {
-    background-color: #75B038;
-    border-radius: 20px;
-    width: 90%;
-  }
-
-  &::-webkit-scrollbar-thumb {
-    background-color: #646464;
-    border-radius: 20px;  
-    border: 2px solid #75B038;
-  }
-`;
-
-const StyledfeaturedProduct = styled.div`
-  width: 296px;
-  height: 200px;
-  min-width: 296px;
-  min-height: 200px;
-  background: linear-gradient(90deg, rgba(40, 40, 40, 0.4) 0%, rgba(83, 83, 83, 0.4) 100%);
-  border-radius: 15px;
-  border: none;
-  outline: none;
-  display: flex;
-  align-items: center;
-  margin: 10px;
-  padding: 10px;
-
-  > div {
-    width: 50%;
-    height: 80%;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: space-around;
-
-    > button {
-      height: 35px;
-      font-family: 'Montserrat', sans-serif;
-      font-weight: 600;
-      font-size: 13px;
-      line-height: 15px;
-      color: #FFFFFF;
-      background-color: #6D5982;
-      box-shadow: 0px 3px 7px rgba(0, 0, 0, 0.08);
-      border-radius: 15px;
-      border: none;
-      outline: none;
-    }
-
-    > div > h1 {
-      font-weight: 700;
-      font-size: 18px;
-      line-height: 23px;
-      color: #FFFFFF;
-    }
-
-    > div > h2 {
-      font-weight: 600;
-      font-size: 18px;
-      line-height: 23px;
-      color: #FFFFFF;
-    }
-  }
-
-  > img {
-    width: 50%;
-    height: 100%;
-    object-fit: contain;
-    overflow: hidden;
-  }
-`;
-
-const StyledProducts = styled.section`
-  width: 100%;
-  margin-bottom: 20px;
-  box-sizing: border-box;
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: center;
-  background-color: cha;
-`;
-
-const StyledProduct = styled.button`
-  width: 185px;
-  height: 230px;
-  background: linear-gradient(180deg, rgba(115, 115, 115, .5) 0%, rgba(60, 60, 60, .2) 100%);
-  border-radius: 14px;
-  outline: none;
-  border: none;
-  margin: 12px;
-  box-sizing: border-box;
-  transition: 1s;
-
-  > img {
-    width: 100%;
-    height: 60%;
-    object-fit: contain;
-    overflow: hidden;
-    margin: 8px 0px;
-  }
-
-  &:hover {
-    transform: scale(1.1);
-  }
-`;
-
-const StyledReviews = styled.section`
-  display: flex;
-  padding: 3px 7px; 
-
-  > span {
-    font-weight: 600;
-    font-size: 13px;
-    line-height: 13px;
-    color: #FFFFFF
-  }
-
-  > svg {
-    font-size: 15px;
-    color: #FFC567;
-    margin: 0px 5px;
-  }
-`;
-
-const StyledModelPrice = styled.section`
-  display: flex;
-  flex-direction: column;
-  align-items: flex-start;
-  padding: 3px 7px; 
-
-  > h1 {
-    font-weight: 600;
-    font-size: 15px;
-    line-height: 17px;
-    color: #FFFFFF
-  }
-
-  > h2 {
-    font-weight: 600;
-    font-size: 15px;
-    line-height: 17px;
-    color: #FFFFFF
   }
 `;
 

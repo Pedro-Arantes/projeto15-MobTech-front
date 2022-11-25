@@ -10,7 +10,7 @@ import { SearchContext } from '../context/search';
 export default function NavBarComponent() {
 
   const navigate = useNavigate();
-  const { searchQuestion, setSearchQuestion } = useContext(SearchContext);
+  const { setSearchQuestion } = useContext(SearchContext);
   const [form, setForm] = useState('');
 
   return (

@@ -5,9 +5,7 @@ import { Link, useNavigate} from 'react-router-dom';
 import { DataContext } from "../context/Auth";
 
 
-
-
-export default function SignInComponent(){
+export default function SignInPage(){
 
     const { setToken } = useContext(DataContext);
     const [boolButton, setBoolButton] = useState(false)

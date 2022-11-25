@@ -4,14 +4,15 @@ export const DataContext = createContext({})
 
 function DataProvider ({children}){
 
-const [data,setData] = useState("")
-const [user,setUser] = useState({})
+const [total,setTotal] = useState("")
+const [user,setUser] = useState("")
 const [token, setToken] = useState("")
+const [cartArray, setCart] = useState([])
 
 
 return(
 
-    <DataContext.Provider value={{data, setData, setUser, user, token, setToken}}>
+    <DataContext.Provider value={{cartArray, setCart, setUser, user, token, setToken,total,setTotal}}>
         {children}
     </DataContext.Provider>
 )

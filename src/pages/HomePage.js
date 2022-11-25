@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useContext } from 'react';
 import { TailSpin } from 'react-loader-spinner';
 import { BsStarHalf } from 'react-icons/bs';
 import styled from 'styled-components';
@@ -7,9 +7,13 @@ import Swal from 'sweetalert2';
 import InfiniteScroll from 'react-infinite-scroll-component';
 
 import NavBarComponent from '../components/NavBarComponent.js';
+import { SearchContext } from '../context/search.js';
+
 
 export default function HomePage() {
 
+  const HOME_URL = 'http://localhost:5000';
+  const { searchQuestion, setSearchQuestion } = useContext(SearchContext);
   const [products, setProducts] = useState([]);
   const [featuredProducts, setFeaturedProducts] = useState([])
   const [loading, setLoading] = useState(true);
@@ -18,7 +22,7 @@ export default function HomePage() {
 
   useEffect(() => {
     setLoading(true);
-    axios.get('http://localhost:5000/')
+    axios.get(`${HOME_URL}/?q=${searchQuestion}`)
       .then(res => {
         setProducts(res.data);
         setFeaturedProducts(res.data.filter(product => product.featuredProduct));
@@ -28,7 +32,7 @@ export default function HomePage() {
         setLoading(false);
         setError(true);
       });
-  }, [refresh]);
+  }, [refresh, searchQuestion]);
 
   function fetchMoreData() {
 

@@ -1,15 +1,16 @@
 import { BsHeartFill, BsCart3, BsPersonCircle, BsSearch } from 'react-icons/bs';
-import { useState } from 'react';
+import { useState, useContext } from 'react';
 import Swal from 'sweetalert2';
 import styled from 'styled-components';
 import { useNavigate } from 'react-router-dom';
 
 import logo from '../assets/images/borsalino.png';
+import { SearchContext } from '../context/search';
 
 export default function NavBarComponent() {
 
   const navigate = useNavigate();
-  const [inputSearch, setInputSearch] = useState('');
+  const { searchQuestion, setSearchQuestion } = useContext(SearchContext);
 
   return (
     <StyledNavBarComponent>
@@ -28,14 +29,14 @@ export default function NavBarComponent() {
               inputLabel: 'Pode inserir marca, modelo ou versão',
               confirmButtonText: 'pesquisar',
               cancelButtonText: 'cancelar',
-              inputValue: inputSearch,
+              inputValue: searchQuestion,
               showCancelButton: true,
               inputValidator: (value) => {
                 if (!value) {
                   return 'Você precisa inserir algo para pesquisar!';
                 } else {
-                  setInputSearch(value);
-                  navigate('/pesquisa');
+                  setSearchQuestion(value);
+                  navigate('/');
                 }
               }
             });

@@ -1,6 +1,6 @@
 import { useState, useEffect, useContext } from 'react';
 import { TailSpin } from 'react-loader-spinner';
-import { BsStarHalf } from 'react-icons/bs';
+import { BsStarHalf, BsArrowLeftCircleFill } from 'react-icons/bs';
 import styled from 'styled-components';
 import axios from 'axios';
 import Swal from 'sweetalert2';
@@ -8,7 +8,6 @@ import InfiniteScroll from 'react-infinite-scroll-component';
 
 import NavBarComponent from '../components/NavBarComponent.js';
 import { SearchContext } from '../context/search.js';
-
 
 export default function HomePage() {
 
@@ -93,12 +92,10 @@ export default function HomePage() {
       <StyledHome>
         <NavBarComponent />
         <StyledContent loadingProp={loading}>
-          <InfiniteScroll
-            dataLength={products.length}
-            next={fetchMoreData}
-            hasMore={true}
-            loader={messageLoader()}
-          >
+          {(searchQuestion.length > 0 ?
+            <StyledMessageSearch>
+              A sua busca por <span>'{searchQuestion}'</span> obteve <span>{products.length}</span> resultados:
+            </StyledMessageSearch> :
             <StyledfeaturedProducts>
               {featuredProducts.map((product, index) => {
                 return (
@@ -118,6 +115,13 @@ export default function HomePage() {
                 );
               })}
             </StyledfeaturedProducts>
+          )}
+          <InfiniteScroll
+            dataLength={products.length}
+            next={fetchMoreData}
+            hasMore={false}
+            loader={messageLoader()}
+          >
             <StyledProducts>
               {products.map((product, index) => {
                 return (
@@ -142,8 +146,16 @@ export default function HomePage() {
                   </StyledProduct>
                 );
               })}
+
             </StyledProducts>
           </InfiniteScroll>
+          {(searchQuestion.length > 0 ?
+            <ButtonReset onClick={() => setSearchQuestion('')}>
+              <BsArrowLeftCircleFill />
+              Voltar
+            </ButtonReset>
+            : ''
+          )}
         </StyledContent>
       </StyledHome>
     );
@@ -175,6 +187,19 @@ const StyledContent = styled.section`
   flex-direction: column;
   align-items: ${props => props.loadingProp ? 'center' : 'default'};
   justify-content: ${props => props.loadingProp ? 'center' : 'default'};
+`;
+
+const StyledMessageSearch = styled.span`
+  width: 100%;
+  height: 70px;
+  padding: 25px 0px;
+  font-size: 18px;
+  text-align: center;
+  box-sizing: border-box;
+
+  > span {
+    color: #73C800;
+  }
 `;
 
 const StyledfeaturedProducts = styled.section`
@@ -278,6 +303,7 @@ const StyledProduct = styled.button`
   border: none;
   margin: 12px;
   box-sizing: border-box;
+  transition: 1s;
 
   > img {
     width: 100%;
@@ -285,6 +311,10 @@ const StyledProduct = styled.button`
     object-fit: contain;
     overflow: hidden;
     margin: 8px 0px;
+  }
+
+  &:hover {
+    transform: scale(1.1);
   }
 `;
 
@@ -294,7 +324,7 @@ const StyledReviews = styled.section`
 
   > span {
     font-weight: 600;
-    font-size: 16px;
+    font-size: 13px;
     line-height: 13px;
     color: #FFFFFF
   }
@@ -338,5 +368,33 @@ const StyledLoader = styled.section`
 
   > svg {
     margin: 20px;
+  }
+`;
+
+const ButtonReset = styled.button`
+  height: 40px;
+  width: 150px;
+  margin-bottom: 150px;
+  font-family: 'Montserrat', sans-serif;
+  font-weight: 600;
+  font-size: 20px;
+  display: flex;
+  align-items: center;
+  justify-content: space-evenly;
+  background-color: rgba(115, 200, 0, .4);
+  color: #FFFFFF;
+  border: none;
+  outline: none;
+  border-radius: 15px;
+  padding: 5px;
+  transition: 1s;
+
+  > svg {
+    margin: 10px
+  }
+
+  &:hover {
+    background-color: rgba(115, 200, 0, .9);
+    transform: scale(1.1);
   }
 `;

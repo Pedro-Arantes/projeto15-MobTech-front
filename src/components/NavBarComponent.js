@@ -11,6 +11,7 @@ export default function NavBarComponent() {
 
   const navigate = useNavigate();
   const { searchQuestion, setSearchQuestion } = useContext(SearchContext);
+  const [form, setForm] = useState('');
 
   return (
     <StyledNavBarComponent>
@@ -29,13 +30,14 @@ export default function NavBarComponent() {
               inputLabel: 'Pode inserir marca, modelo ou versão',
               confirmButtonText: 'pesquisar',
               cancelButtonText: 'cancelar',
-              inputValue: searchQuestion,
+              inputValue: form,
               showCancelButton: true,
               inputValidator: (value) => {
                 if (!value) {
-                  return 'Você precisa inserir algo para pesquisar!';
+                  setSearchQuestion('');
                 } else {
-                  setSearchQuestion(value);
+                  setSearchQuestion(value.trim());
+                  setForm('');
                   navigate('/');
                 }
               }

@@ -9,8 +9,9 @@ import { DataContext } from '../context/Auth.js';
 export default function ProductsComponent({ products, favorites, setFavorites, cart, setCart }) {
 
   const HOME_URL = 'http://localhost:5000';
-  const { user } = useContext(DataContext);
+  //const { user } = useContext(DataContext);
   const navigate = useNavigate();
+  const user = {id: 1};
 
   const config = {
     headers: {

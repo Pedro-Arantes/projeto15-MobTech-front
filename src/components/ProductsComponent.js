@@ -9,18 +9,17 @@ import { DataContext } from '../context/Auth.js';
 export default function ProductsComponent({ products, favorites, setFavorites, cart, setCart }) {
 
   const HOME_URL = 'http://localhost:5000';
-  //const { user } = useContext(DataContext);
+  const { user } = useContext(DataContext);
   const navigate = useNavigate();
-  const user = {id: 1};
 
   const config = {
     headers: {
-      Authorization: `Bearer ${user.token}`
+      Authorization: `Bearer ${user?.token}`
     }
   };
 
   useEffect(() => {
-    if (user.id) {
+    if (user) {
       axios.put(`${HOME_URL}/carrinho/${user.id}`, { cart: cart }, config)
         .then(res => {
         })
@@ -36,7 +35,7 @@ export default function ProductsComponent({ products, favorites, setFavorites, c
   }, [cart, favorites]);
 
   function favoritesHandle(id) {
-    if (!user.id) {
+    if (!user) {
       navigate('/login')
     } else {
       const newFavorites = favorites.includes(id) ? favorites.filter(i => i !== id) : [...favorites, id];
@@ -45,7 +44,7 @@ export default function ProductsComponent({ products, favorites, setFavorites, c
   }
 
   function cartHandle(id) {
-    if (!user.id) {
+    if (!user) {
       navigate('/login')
     } else {
       const newCart = cart.includes(id) ? cart.filter(i => i !== id) : [...cart, id];

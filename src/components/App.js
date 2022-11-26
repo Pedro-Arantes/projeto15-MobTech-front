@@ -1,19 +1,21 @@
-import GlobalStyle from '../assets/styles/GlobalStyle.js';
+
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
-import HomePage from '../pages/HomePage'
-import CartPage from '../pages/CartPage'
-import ChekoutPage from '../pages/ChekoutPage'
-import DataProvider from '../context/Auth';
-import SignInPage from '../pages/SignInPage'
-import SignUpPage from '../pages/SignUpPage'
-import SearchProvider from '../context/search.js';
+
+import GlobalStyle from '../assets/styles/GlobalStyle.js';
+import HomePage from '../pages/HomePage.js'
+import CartPage from '../pages/CartPage.js'
+import ChekoutPage from '../pages/ChekoutPage.js'
+import DataProvider from '../context/Auth.js';
+import SignInPage from '../pages/SignInPage.js'
+import SignUpPage from '../pages/SignUpPage.js'
+import NavBarProvider from '../context/NavBarContext.js';
 
 function App() {
   return (
     <BrowserRouter>
       <GlobalStyle />
       <DataProvider>
-        <SearchProvider>
+        <NavBarProvider>
           <Routes>
             <Route path='/' element={<HomePage />} />
             <Route path='/cadastro' element={<SignUpPage />} />
@@ -21,7 +23,7 @@ function App() {
             <Route path='/carrinho' element={<CartPage />} />
             <Route path='/compra' element={<ChekoutPage />} />
           </Routes>
-        </SearchProvider>
+        </NavBarProvider>
       </DataProvider>
     </BrowserRouter >
   );

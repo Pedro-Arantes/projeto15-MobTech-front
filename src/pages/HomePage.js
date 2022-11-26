@@ -6,27 +6,32 @@ import axios from 'axios';
 import Swal from 'sweetalert2';
 import InfiniteScroll from 'react-infinite-scroll-component';
 
+import { APP_URL } from '../constants.js';
 import NavBarComponent from '../components/NavBarComponent.js';
-import { SearchContext } from '../context/search.js';
+import { NavBarContext } from '../context/NavBarContext.js';
 import FeaturedProductsComponent from '../components/FeaturedProductsComponent.js';
 import ProductsComponent from '../components/ProductsComponent.js';
 
 export default function HomePage() {
 
-  const HOME_URL = 'http://localhost:5000';
-  const { searchQuestion, setSearchQuestion } = useContext(SearchContext);
+  const {
+    searchQuestion,
+    setSearchQuestion,
+    favorites,
+    setFavorites,
+    cart,
+    setCart
+  } = useContext(NavBarContext);
 
   const [products, setProducts] = useState([]);
   const [featuredProducts, setFeaturedProducts] = useState([])
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(false);
   const [refresh, setRefresh] = useState(0);
-  const [favorites, setFavorites] = useState([]);
-  const [cart, setCart] = useState([]);
 
   useEffect(() => {
     setLoading(true);
-    axios.get(`${HOME_URL}/?q=${searchQuestion}`)
+    axios.get(`${APP_URL}/?q=${searchQuestion}`)
       .then(res => {
         setProducts(res.data);
         setFeaturedProducts(res.data.filter(product => product.featuredProduct === 'true'));
@@ -107,8 +112,8 @@ export default function HomePage() {
                 {' resultados:'}
               </StyledMessageSearch>
               :
-              <FeaturedProductsComponent 
-                featuredProducts={featuredProducts} 
+              <FeaturedProductsComponent
+                featuredProducts={featuredProducts}
               />
           }
           <InfiniteScroll
@@ -117,12 +122,12 @@ export default function HomePage() {
             hasMore={false}
             loader={messageLoader()}
           >
-            <ProductsComponent 
-              products={products} 
-              favorites={favorites} 
-              setFavorites={setFavorites} 
-              cart={cart} 
-              setCart={setCart} 
+            <ProductsComponent
+              products={products}
+              favorites={favorites}
+              setFavorites={setFavorites}
+              cart={cart}
+              setCart={setCart}
             />
           </InfiniteScroll>
           {

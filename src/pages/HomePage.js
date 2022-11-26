@@ -6,7 +6,7 @@ import axios from 'axios';
 import Swal from 'sweetalert2';
 import InfiniteScroll from 'react-infinite-scroll-component';
 
-import { APP_URL } from '../constants.js';
+import { PRODUCTS_URL } from '../constants.js';
 import NavBarComponent from '../components/NavBarComponent.js';
 import { NavBarContext } from '../context/NavBarContext.js';
 import FeaturedProductsComponent from '../components/FeaturedProductsComponent.js';
@@ -31,7 +31,7 @@ export default function HomePage() {
 
   useEffect(() => {
     setLoading(true);
-    axios.get(`${APP_URL}/?q=${searchQuestion}`)
+    axios.get(`${PRODUCTS_URL}/?q=${searchQuestion}`)
       .then(res => {
         setProducts(res.data);
         setFeaturedProducts(res.data.filter(product => product.featuredProduct === 'true'));

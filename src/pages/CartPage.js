@@ -6,6 +6,8 @@ import { MainStyled, CartStyled, BalanceStyled } from "../assets/styles/CartStyl
 import CartItem from "../components/CartItem";
 import NavBarComponent from "../components/NavBarComponent";
 
+import { CART_URL } from '../constants.js';
+
 export default function CartPage() {
 
     
@@ -41,8 +43,6 @@ export default function CartPage() {
     
     useEffect(()=>{
         const getCart = ()=>{
-
-            const URL = 'http://localhost:5000/cart'
             const config = {
                 headers: {
                     Authorization: `Bearer ${token}`
@@ -63,7 +63,7 @@ export default function CartPage() {
                 window.location.reload()
             }
 
-            const req = axios.get(URL, config);
+            const req = axios.get(CART_URL, config);
             req.then(tratarSucesso)
             req.catch(tratarErro)
         }

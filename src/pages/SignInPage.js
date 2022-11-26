@@ -5,13 +5,13 @@ import { ThreeDots } from 'react-loader-spinner';
 import axios from 'axios';
 import Swal from 'sweetalert2';
 
-import { APP_URL } from '../constants.js';
+import { SIGN_IN_URL } from '../constants.js';
 import { DataContext } from '../context/Auth.js';
 import logo from '../assets/images/borsalino.png';
 
 export default function SignInPage() {
 
-  const { setUser } = useContext(DataContext);
+  const { setUser, setToken } = useContext(DataContext);
   const [formEnabled, setFormEnabled] = useState(true);
   const [form, setForm] = useState({ email: '', password: '' });
   const navigate = useNavigate();
@@ -24,9 +24,10 @@ export default function SignInPage() {
   function signIn(e) {
     e.preventDefault();
     setFormEnabled(false);
-    axios.post(`${APP_URL}/login`, form)
+    axios.post(SIGN_IN_URL, form)
       .then(res => {
-        setUser(res.data);
+        setUser({ name: res.data.name, image: res.data.image });
+        setToken(res.data.token);
         navigate('/');
       })
       .catch(err => {

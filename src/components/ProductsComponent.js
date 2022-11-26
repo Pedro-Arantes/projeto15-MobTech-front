@@ -35,7 +35,7 @@ export default function ProductsComponent({ products, favorites, setFavorites, c
   }, [cart, favorites]);
 
   function favoritesHandle(id) {
-    if (!user.id) {
+    if (!user) {
       navigate('/login')
     } else {
       const newFavorites = favorites.includes(id) ? favorites.filter(i => i !== id) : [...favorites, id];
@@ -44,7 +44,7 @@ export default function ProductsComponent({ products, favorites, setFavorites, c
   }
 
   function cartHandle(id) {
-    if (!user.id) {
+    if (!user) {
       navigate('/login')
     } else {
       const newCart = cart.includes(id) ? cart.filter(i => i !== id) : [...cart, id];

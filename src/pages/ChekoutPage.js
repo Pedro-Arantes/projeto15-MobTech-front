@@ -1,6 +1,6 @@
 import axios from "axios";
-import { Link, useNavigate } from "react-router-dom";
-import { useState, useContext, useEffect } from 'react';
+import {  useNavigate } from "react-router-dom";
+import { useState, useContext, } from 'react';
 import { DataContext } from "../context/Auth";
 import NavBarComponent from "../components/NavBarComponent";
 import { MainStyled } from "../assets/styles/CartStyle"
@@ -22,7 +22,7 @@ export default function CartPage() {
         if (stat === "buy") {
 
               const postPurchase = () =>{
-                const URL = 'http://localhost:5000/purchase'
+                const URL = 'https://mobtech.onrender.com'
 
                 const obj = {
                     adress,

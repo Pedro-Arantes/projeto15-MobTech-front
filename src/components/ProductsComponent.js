@@ -11,6 +11,7 @@ import { FAVS_URL, CART_URL } from '../constants.js';
 export default function ProductsComponent({ products, favorites, setFavorites, cart, setCart }) {
 
   const { user, token } = useContext(DataContext);
+
   const navigate = useNavigate();
 
   const config = {

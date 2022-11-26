@@ -1,6 +1,6 @@
 import axios from "axios";
-import { Link, useNavigate } from "react-router-dom";
-import { useState, useContext, useEffect } from 'react';
+import {  useNavigate } from "react-router-dom";
+import { useState, useContext, } from 'react';
 import { DataContext } from "../context/Auth";
 import NavBarComponent from "../components/NavBarComponent";
 import { MainStyled } from "../assets/styles/CartStyle"

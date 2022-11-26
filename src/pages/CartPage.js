@@ -11,10 +11,10 @@ export default function CartPage() {
     
     const [update,setUpdate] = useState("")
     const[test,setTeste]=useState("")
-    const { setCart,cartArray,total,setTotal,} = useContext(DataContext)
+    const { setCart,cartArray,total,setTotal,token} = useContext(DataContext)
 
     const navigate = useNavigate();
-    const token = "540e441c-9227-4749-ba22-9fe8204e7dfc"
+
     const NextPage = ()=>{
         //verificar se o carrinho está vazio
         if (cartArray.length<1) {

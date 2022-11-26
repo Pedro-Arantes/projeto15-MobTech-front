@@ -2,13 +2,13 @@ import { createContext, useState } from 'react';
 
 export const NavBarContext = createContext({})
 
-export default function SearchProvider({ children }) {
+export default function NavBarProvider({ children }) {
   const [searchQuestion, setSearchQuestion] = useState('');
   const [favorites, setFavorites] = useState([]);
   const [cart, setCart] = useState([]);
 
   return (
-    <SearchContext.Provider value={
+    <NavBarContext.Provider value={
       {
         searchQuestion,
         setSearchQuestion,
@@ -19,6 +19,6 @@ export default function SearchProvider({ children }) {
       }
     }>
       {children}
-    </SearchContext.Provider>
+    </NavBarContext.Provider>
   );
 }

@@ -5,7 +5,7 @@ export const DataContext = createContext({});
 export default function DataProvider({ children }) {
 
   const [total, setTotal] = useState('');
-  const [user, setUser] = useState({});
+  const [user, setUser] = useState();
   const [cartArray, setCart] = useState([]);
 
   return (

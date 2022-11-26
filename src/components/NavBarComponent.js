@@ -6,15 +6,23 @@ import { useNavigate } from 'react-router-dom';
 
 import logo from '../assets/images/borsalino.png';
 import person from '../assets/images/person-login-icon.png';
-import { SearchContext } from '../context/NavBarContext.js';
+import { NavBarContext } from '../context/NavBarContext.js';
 import { DataContext } from '../context/Auth.js';
 
 export default function NavBarComponent() {
 
   const { user } = useContext(DataContext);
   const navigate = useNavigate();
-  const { setSearchQuestion } = useContext(SearchContext);
+  const {
+    setSearchQuestion,
+    favorites,
+    cart,
+  } = useContext(NavBarContext);
+
   const [form, setForm] = useState('');
+
+  console.log(favorites, (favorites.length > 0))
+  console.log(cart, (cart.length > 0))
 
   return (
     <StyledNavBarComponent>
@@ -56,7 +64,10 @@ export default function NavBarComponent() {
             user ? navigate('/favoritos') : navigate('/login');
           }}
         >
-          <BsHeartFill />
+          <StyleIcon show={(favorites.length > 0)} >
+            <BsHeartFill />
+            <span>{favorites.length}</span>
+          </StyleIcon>
         </button>
 
         <button
@@ -65,7 +76,10 @@ export default function NavBarComponent() {
             user ? navigate('/carrinho') : navigate('/login');
           }}
         >
-          <BsCart3 />
+          <StyleIcon show={(cart.length > 0)} >
+            <BsCart3 />
+            <span>{cart.length}</span>
+          </StyleIcon>
         </button>
 
         <button
@@ -75,7 +89,7 @@ export default function NavBarComponent() {
           }}
         >
           <StyledProfile>
-            <img src={user.image || person} alt={`Imagem ${user.name || 'visitante'}`} />
+            <img src={user?.image || person} alt={`Imagem ${user?.name || 'visitante'}`} />
           </StyledProfile>
         </button>
       </Menu>
@@ -150,6 +164,24 @@ const Menu = styled.section`
     height: 100%;
     max-height: 25px;
     color: #FFFFFF;
+  }
+`;
+
+const StyleIcon = styled.div`
+  position: relative;
+
+  > span {
+    visibility: ${props => props.show ? 'visible' : 'hidden'};
+    width: 16px;
+    border-radius: 8px;
+    color: #FFFFFF;
+    padding: 2px;
+    position: absolute;
+    top: 0;
+    right: -6px;
+    background-color: #5D32DA;
+    font-size: 10px;
+    text-align: center;
   }
 `;
 

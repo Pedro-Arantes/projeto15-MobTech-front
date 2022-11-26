@@ -47,8 +47,8 @@ export default function SignInPage() {
   function spinner() {
     return (
       <ThreeDots
-        height='50' 
-        width='50' 
+        height='50'
+        width='50'
         radius='4'
         color='#73C800'
       />

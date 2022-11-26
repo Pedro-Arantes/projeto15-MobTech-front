@@ -8,21 +8,26 @@ import InfiniteScroll from 'react-infinite-scroll-component';
 
 import { APP_URL } from '../constants.js';
 import NavBarComponent from '../components/NavBarComponent.js';
-import { SearchContext } from '../context/search.js';
+import { NavBarContext } from '../context/NavBarContext.js';
 import FeaturedProductsComponent from '../components/FeaturedProductsComponent.js';
 import ProductsComponent from '../components/ProductsComponent.js';
 
 export default function HomePage() {
 
-  const { searchQuestion, setSearchQuestion } = useContext(SearchContext);
+  const {
+    searchQuestion,
+    setSearchQuestion,
+    favorites,
+    setFavorites,
+    cart,
+    setCart
+  } = useContext(NavBarContext);
 
   const [products, setProducts] = useState([]);
   const [featuredProducts, setFeaturedProducts] = useState([])
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(false);
   const [refresh, setRefresh] = useState(0);
-  const [favorites, setFavorites] = useState([]);
-  const [cart, setCart] = useState([]);
 
   useEffect(() => {
     setLoading(true);
@@ -107,8 +112,8 @@ export default function HomePage() {
                 {' resultados:'}
               </StyledMessageSearch>
               :
-              <FeaturedProductsComponent 
-                featuredProducts={featuredProducts} 
+              <FeaturedProductsComponent
+                featuredProducts={featuredProducts}
               />
           }
           <InfiniteScroll
@@ -117,12 +122,12 @@ export default function HomePage() {
             hasMore={false}
             loader={messageLoader()}
           >
-            <ProductsComponent 
-              products={products} 
-              favorites={favorites} 
-              setFavorites={setFavorites} 
-              cart={cart} 
-              setCart={setCart} 
+            <ProductsComponent
+              products={products}
+              favorites={favorites}
+              setFavorites={setFavorites}
+              cart={cart}
+              setCart={setCart}
             />
           </InfiniteScroll>
           {

@@ -14,12 +14,12 @@ export default function ProductsComponent({ products, favorites, setFavorites, c
 
   const config = {
     headers: {
-      Authorization: `Bearer ${user.token}`
+      Authorization: `Bearer ${user?.token}`
     }
   };
 
   useEffect(() => {
-    if (user.id) {
+    if (user) {
       axios.put(`${HOME_URL}/carrinho/${user.id}`, { cart: cart }, config)
         .then(res => {
         })

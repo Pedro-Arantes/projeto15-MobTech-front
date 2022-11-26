@@ -8,7 +8,7 @@ import { DataContext } from '../context/Auth.js';
 
 export default function ProductsComponent({ products, favorites, setFavorites, cart, setCart }) {
 
-  const HOME_URL = 'http://localhost:5000';
+  const HOME_URL = 'https://mobtech.onrender.com';
   const { user } = useContext(DataContext);
   const navigate = useNavigate();
 

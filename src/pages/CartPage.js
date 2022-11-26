@@ -42,7 +42,7 @@ export default function CartPage() {
     useEffect(()=>{
         const getCart = ()=>{
 
-            const URL = 'http://localhost:5000/cart'
+            const URL = "https://mobtech.onrender.com"
             const config = {
                 headers: {
                     Authorization: `Bearer ${token}`

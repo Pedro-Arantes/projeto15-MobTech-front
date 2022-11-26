@@ -23,7 +23,7 @@ export default function CartItem ({objt,setUpdate,token,navigate,setTeste,teste}
                 Authorization: `Bearer ${token}`
             }
         }
-        const URL = 'http://localhost:5000/cart'
+        const URL = 'https://mobtech.onrender.com'
         const tratarSucesso = (resposta) => {
             //console.log(resposta)
             n=   n +1
@@ -73,7 +73,7 @@ export default function CartItem ({objt,setUpdate,token,navigate,setTeste,teste}
                 id:_id
             }
         }
-        const URL = 'http://localhost:5000/cart'
+        const URL = "https://mobtech.onrender.com"
         const tratarSucesso = (resposta) => {
             
             n = Number(teste) +1

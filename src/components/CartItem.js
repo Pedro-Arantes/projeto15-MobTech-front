@@ -3,6 +3,8 @@ import axios from "axios";
 import {  CartItemStyled, CartDescription,CounterDiv,CartContent } from "../assets/styles/CartStyle"
 import {FiTrash2} from  'react-icons/fi'
 
+import { CART_URL } from '../constants.js';
+
 export default function CartItem ({objt,setUpdate,token,navigate,setTeste,teste}){
 
     const {img,model,price,amount,_id} = objt
@@ -23,7 +25,7 @@ export default function CartItem ({objt,setUpdate,token,navigate,setTeste,teste}
                 Authorization: `Bearer ${token}`
             }
         }
-        const URL = 'https://mobtech.onrender.com'
+
         const tratarSucesso = (resposta) => {
             //console.log(resposta)
             n=   n +1
@@ -36,7 +38,7 @@ export default function CartItem ({objt,setUpdate,token,navigate,setTeste,teste}
             navigate("/")
         }
 
-        const requisicao = axios.put(URL, obj, config);
+        const requisicao = axios.put(CART_URL, obj, config);
         requisicao.then(tratarSucesso)
         requisicao.catch(tratarErro)
     }
@@ -73,7 +75,7 @@ export default function CartItem ({objt,setUpdate,token,navigate,setTeste,teste}
                 id:_id
             }
         }
-        const URL = "https://mobtech.onrender.com"
+
         const tratarSucesso = (resposta) => {
             
             n = Number(teste) +1
@@ -88,7 +90,7 @@ export default function CartItem ({objt,setUpdate,token,navigate,setTeste,teste}
             navigate("/")
         }
 
-        const requisicao = axios.delete(URL,  config);
+        const requisicao = axios.delete(CART_URL,  config);
         requisicao.then(tratarSucesso)
         requisicao.catch(tratarErro)
     

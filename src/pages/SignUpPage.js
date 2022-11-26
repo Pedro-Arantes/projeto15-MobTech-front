@@ -5,7 +5,7 @@ import Swal from 'sweetalert2';
 import styled from 'styled-components';
 import axios from 'axios';
 
-import { APP_URL } from '../constants.js';
+import { SIGN_UP_URL } from '../constants.js';
 import logo from '../assets/images/borsalino.png';
 
 export default function SignUpPage() {
@@ -64,7 +64,7 @@ export default function SignUpPage() {
     const user = confirmPassword();
 
     if (user) {
-      axios.post(`${APP_URL}/cadastro`, user)
+      axios.post(SIGN_UP_URL, user)
         .then((res) => {
           Swal.fire({
             position: 'center',

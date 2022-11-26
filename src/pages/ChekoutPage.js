@@ -9,20 +9,21 @@ import {BsTelephone} from  'react-icons/bs'
 import {HiOutlineMapPin} from  'react-icons/hi2'
 import Swal from 'sweetalert2'
 
+import { PURCHASE_URL } from '../constants.js';
+
 
 export default function CartPage() {
-    const { total} = useContext(DataContext)
+    const { total, token} = useContext(DataContext)
     const [tell,setTell] = useState("")
     const [adress,setAdress] = useState("")
     const navigate = useNavigate();
-    const token = "540e441c-9227-4749-ba22-9fe8204e7dfc"
-
+/*     const token = "540e441c-9227-4749-ba22-9fe8204e7dfc"
+ */
     const FinishBuy = (stat) =>{
 
         if (stat === "buy") {
 
               const postPurchase = () =>{
-                const URL = 'https://mobtech.onrender.com'
 
                 const obj = {
                     adress,
@@ -49,7 +50,7 @@ export default function CartPage() {
                     Swal.fire({text: re,})
                     navigate("/compra")
                 }
-                const requisicao = axios.post(URL, obj, config);
+                const requisicao = axios.post(PURCHASE_URL, obj, config);
                 requisicao.then(tratarSucesso)
                 requisicao.catch(tratarErro)
               }

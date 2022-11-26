@@ -11,7 +11,8 @@ import { DataContext } from '../context/Auth.js';
 
 export default function NavBarComponent() {
 
-  const { user } = useContext(DataContext);
+  const { user, token } = useContext(DataContext);
+  
   const navigate = useNavigate();
   const {
     setSearchQuestion,
@@ -20,9 +21,6 @@ export default function NavBarComponent() {
   } = useContext(NavBarContext);
 
   const [form, setForm] = useState('');
-
-  console.log(favorites, (favorites.length > 0))
-  console.log(cart, (cart.length > 0))
 
   return (
     <StyledNavBarComponent>
@@ -61,7 +59,7 @@ export default function NavBarComponent() {
         <button
           title='Favoritos'
           onClick={() => {
-            user ? navigate('/favoritos') : navigate('/login');
+            token ? navigate('/favoritos') : navigate('/login');
           }}
         >
           <StyleIcon show={(favorites.length > 0)} >
@@ -73,7 +71,8 @@ export default function NavBarComponent() {
         <button
           title='Carrinho'
           onClick={() => {
-            user ? navigate('/carrinho') : navigate('/login');
+            console.log('clicou')
+            token ? navigate('/carrinho') : navigate('/login');
           }}
         >
           <StyleIcon show={(cart.length > 0)} >
@@ -85,7 +84,7 @@ export default function NavBarComponent() {
         <button
           title='Usuário'
           onClick={() => {
-            user ? navigate('/usuario') : navigate('/login');
+            token ? navigate('/usuario') : navigate('/login');
           }}
         >
           <StyledProfile>
@@ -174,12 +173,14 @@ const StyleIcon = styled.div`
     visibility: ${props => props.show ? 'visible' : 'hidden'};
     width: 16px;
     border-radius: 8px;
-    color: #FFFFFF;
+    color: #000000;
+    font-family: 'Montserrat', sans-serif;
+    font-weight: 600;
     padding: 2px;
     position: absolute;
     top: 0;
     right: -6px;
-    background-color: #5D32DA;
+    background-color: #75B038;
     font-size: 10px;
     text-align: center;
   }

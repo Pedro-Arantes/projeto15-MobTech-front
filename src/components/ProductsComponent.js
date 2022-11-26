@@ -3,52 +3,101 @@ import { BsStarHalf, BsHeartFill, BsHeart, BsCartPlus, BsCartCheckFill } from 'r
 import { useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
 import axios from 'axios';
+import Swal from 'sweetalert2';
 
 import { DataContext } from '../context/Auth.js';
+import { FAVS_URL, CART_URL } from '../constants.js';
 
 export default function ProductsComponent({ products, favorites, setFavorites, cart, setCart }) {
 
-  const HOME_URL = 'https://mobtech.onrender.com';
-  const { user } = useContext(DataContext);
+  const { user, token } = useContext(DataContext);
+
   const navigate = useNavigate();
 
   const config = {
     headers: {
-      Authorization: `Bearer ${user?.token}`
+      Authorization: `Bearer ${token}`
     }
   };
 
-  useEffect(() => {
-    if (user) {
-      axios.put(`${HOME_URL}/carrinho/${user.id}`, { cart: cart }, config)
-        .then(res => {
-        })
-        .catch(err => {
-        });
-
-      axios.put(`${HOME_URL}/favoritos/${user.id}`, { cart: favorites }, config)
-        .then(res => {
-        })
-        .catch(err => {
-        });
-    }
-  }, [cart, favorites]);
-
-  function favoritesHandle(id) {
-    if (!user) {
+  function favoritesHandle(product) {
+    if (!token) {
       navigate('/login')
     } else {
-      const newFavorites = favorites.includes(id) ? favorites.filter(i => i !== id) : [...favorites, id];
-      setFavorites(newFavorites);
+      if (favorites.includes(product.id)) {
+        const newFavorites = favorites.filter(i => i !== product.id);
+        setFavorites(newFavorites);
+        axios.delete(
+          FAVS_URL,
+          { productId: product.id }, config)
+          .then(res => {
+          })
+          .catch(err => {
+            Swal.fire({
+              position: 'top-end',
+              icon: 'error',
+              title: err.response.data.message,
+              showConfirmButton: false,
+              timer: 1500
+            })
+          });
+      } else {
+        const newFavorites = [...favorites, product.id];
+        setFavorites(newFavorites);
+        axios.post(
+          FAVS_URL,
+          {
+            productId: product.id,
+            model: product.model,
+            price: product.price,
+            img: product.image_URL,
+            amount: 1
+          }, config)
+          .then(res => {
+          })
+
+          .catch(err => {
+            Swal.fire({
+              position: 'top-end',
+              icon: 'error',
+              title: err.response.data.message,
+              showConfirmButton: false,
+              timer: 1500
+            })
+          });
+      }
     }
   }
 
-  function cartHandle(id) {
-    if (!user) {
+  function cartHandle(product) {
+    if (!token) {
       navigate('/login')
     } else {
-      const newCart = cart.includes(id) ? cart.filter(i => i !== id) : [...cart, id];
-      setCart(newCart);
+      if (!cart.includes(product.id)) {
+        const newCart = [...cart, product.id];
+        setCart(newCart);
+        axios.post(
+          CART_URL,
+          {
+            model: product.model,
+            price: product.price,
+            img: product.image_URL,
+            amount: 1
+          }, config)
+          .then(res => {
+
+          })
+          .catch(err => {
+            console.log(err.response.data)
+            Swal.fire({
+              position: 'top-end',
+              icon: 'error',
+              title: err.response.data.message,
+              showConfirmButton: false,
+              timer: 1500
+            })
+          });
+      }
     }
   }
 
@@ -68,7 +117,7 @@ export default function ProductsComponent({ products, favorites, setFavorites, c
               <StyledFavorite
                 title={favorites.includes(product.id) ? 'remover dos favoritos' : 'adicionar aos favoritos'}
                 inFavorite={favorites.includes(product.id)}
-                onClick={() => favoritesHandle(product.id)}
+                onClick={() => favoritesHandle(product)}
               >
                 {favorites.includes(product.id) ? <BsHeartFill /> : <BsHeart />}
               </StyledFavorite>
@@ -89,9 +138,9 @@ export default function ProductsComponent({ products, favorites, setFavorites, c
               </h2>
             </StyledModelPrice>
             <StyledAddCart
-              title={favorites.includes(product.id) ? 'remover do carrinho' : 'adicionar ao carrinho'}
+              title={cart.includes(product.id) ? 'remover do carrinho' : 'adicionar ao carrinho'}
               inCart={cart.includes(product.id)}
-              onClick={() => cartHandle(product.id)}
+              onClick={() => cartHandle(product)}
             >
               {cart.includes(product.id) ? <BsCartCheckFill /> : <BsCartPlus />}
             </StyledAddCart>

@@ -6,7 +6,7 @@ import { useNavigate } from 'react-router-dom';
 
 import logo from '../assets/images/borsalino.png';
 import person from '../assets/images/person-login-icon.png';
-import { SearchContext } from '../context/search.js';
+import { SearchContext } from '../context/NavBarContext.js';
 import { DataContext } from '../context/Auth.js';
 
 export default function NavBarComponent() {
@@ -53,7 +53,7 @@ export default function NavBarComponent() {
         <button
           title='Favoritos'
           onClick={() => {
-            user.id ? navigate('/favoritos') : navigate('/login');
+            user ? navigate('/favoritos') : navigate('/login');
           }}
         >
           <BsHeartFill />
@@ -62,7 +62,7 @@ export default function NavBarComponent() {
         <button
           title='Carrinho'
           onClick={() => {
-            user.id ? navigate('/carrinho') : navigate('/login');
+            user ? navigate('/carrinho') : navigate('/login');
           }}
         >
           <BsCart3 />
@@ -71,7 +71,7 @@ export default function NavBarComponent() {
         <button
           title='Usuário'
           onClick={() => {
-            user.id ? navigate('/usuario') : navigate('/login');
+            user ? navigate('/usuario') : navigate('/login');
           }}
         >
           <StyledProfile>

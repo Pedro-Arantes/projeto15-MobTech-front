@@ -1,8 +1,8 @@
 import { BsHeartFill, BsCart3, BsSearch } from 'react-icons/bs';
+import { useNavigate } from 'react-router-dom';
 import { useState, useContext } from 'react';
 import Swal from 'sweetalert2';
 import styled from 'styled-components';
-import { useNavigate } from 'react-router-dom';
 
 import logo from '../assets/images/borsalino.png';
 import person from '../assets/images/person-login-icon.png';
@@ -12,13 +12,9 @@ import { DataContext } from '../context/Auth.js';
 export default function NavBarComponent() {
 
   const { user, token } = useContext(DataContext);
-  
+
   const navigate = useNavigate();
-  const {
-    setSearchQuestion,
-    favorites,
-    cart,
-  } = useContext(NavBarContext);
+  const { setSearchQuestion, favorites, cart } = useContext(NavBarContext);
 
   const [form, setForm] = useState('');
 

@@ -1,4 +1,4 @@
-import { useContext, useEffect } from 'react';
+import { useContext, useState, useEffect } from 'react';
 import { BsStarHalf, BsHeartFill, BsHeart, BsCartPlus, BsCartCheckFill } from 'react-icons/bs';
 import { useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
@@ -10,8 +10,47 @@ import { FAVS_URL, CART_URL } from '../constants.js';
 
 export default function ProductsComponent({ products, favorites, setFavorites, cart, setCart }) {
 
-  const { user, token } = useContext(DataContext);
+  const { token } = useContext(DataContext);
+
   const navigate = useNavigate();
+  const [refresh, setRefresh] = useState(0);
+
+  useEffect(() => {
+    if (token) {
+      axios.get(CART_URL, config)
+        .then(res => {
+          setCart(res.data.cart.map(item => item._id));
+        })
+        .catch(err => {
+          if (err.response.status !== 401) {
+            Swal.fire({
+              position: 'top-end',
+              icon: 'error',
+              title: err.data,
+              showConfirmButton: false,
+              timer: 1500
+            })
+          }
+        });
+
+      axios.get(FAVS_URL, config)
+        .then(res => {
+          setFavorites(res.data.map(product => product.productId));
+        })
+        .catch(err => {
+          if (err.response.status !== 401) {
+            Swal.fire({
+              position: 'top-end',
+              icon: 'error',
+              title: err.response.data.message,
+              showConfirmButton: false,
+              timer: 1500
+            })
+          }
+        });
+    }
+  }, [refresh]);
+
 
   const config = {
     headers: {
@@ -23,14 +62,9 @@ export default function ProductsComponent({ products, favorites, setFavorites, c
     if (!token) {
       navigate('/login')
     } else {
-      if (favorites.includes(product.id)) {
-        const newFavorites = favorites.filter(i => i !== product.id);
-        setFavorites(newFavorites);
-        axios.delete(
-          FAVS_URL,
-          { productId: product.id }, config)
-          .then(res => {
-          })
+      if (!favorites.includes(product.id)) {
+        axios.post(`${FAVS_URL}/${product.id}`, {}, config)
+          .then(() => setRefresh(Math.random()))
           .catch(err => {
             Swal.fire({
               position: 'top-end',
@@ -41,20 +75,8 @@ export default function ProductsComponent({ products, favorites, setFavorites, c
             })
           });
       } else {
-        const newFavorites = [...favorites, product.id];
-        setFavorites(newFavorites);
-        axios.post(
-          FAVS_URL,
-          {
-            productId: product.id,
-            model: product.model,
-            price: product.price,
-            img: product.image_URL,
-            amount: 1
-          }, config)
-          .then(res => {
-          })
-
+        axios.delete(`${FAVS_URL}/${product.id}`, config)
+          .then(() => setRefresh(Math.random()))
           .catch(err => {
             Swal.fire({
               position: 'top-end',
@@ -76,18 +98,15 @@ export default function ProductsComponent({ products, favorites, setFavorites, c
         const newCart = [...cart, product.id];
         setCart(newCart);
         axios.post(
-          CART_URL,
-          {
-            model: product.model,
-            price: product.price,
-            img: product.image_URL,
-            amount: 1
-          }, config)
-          .then(res => {
-
-          })
+          CART_URL, {
+          model: product.model,
+          price: product.price,
+          img: product.image_URL,
+          amount: 1
+        }, config)
+          .then()
           .catch(err => {
-            console.log(err.response.data)
+            console.log(err.response.data);
             Swal.fire({
               position: 'top-end',
               icon: 'error',

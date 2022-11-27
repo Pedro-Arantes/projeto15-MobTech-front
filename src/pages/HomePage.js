@@ -31,7 +31,7 @@ export default function HomePage() {
 
   useEffect(() => {
     setLoading(true);
-    axios.get(`${PRODUCTS_URL}/?q=${searchQuestion}`)
+    axios.get(`${PRODUCTS_URL}/?search=${searchQuestion}`)
       .then(res => {
         setProducts(res.data);
         setFeaturedProducts(res.data.filter(product => product.featuredProduct === 'true'));

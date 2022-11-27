@@ -60,7 +60,7 @@ export default function SignUpPage() {
   function signUp(e) {
     e.preventDefault();
     setFormEnabled(false);
-    
+
     const user = confirmPassword();
 
     if (user) {
@@ -88,7 +88,7 @@ export default function SignUpPage() {
 
   return (
     <PageContainer>
-      <Link to='/login'>
+      <Link to='/'>
         <Logo
           title={formEnabled ? 'Página inicial' : 'aguarde...'}
           disabled={!formEnabled}

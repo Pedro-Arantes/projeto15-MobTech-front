@@ -15,6 +15,12 @@ export default function ProductsComponent({ products, favorites, setFavorites, c
   const navigate = useNavigate();
   const [refresh, setRefresh] = useState(0);
 
+  const config = {
+    headers: {
+      Authorization: `Bearer ${token}`
+    }
+  };
+
   useEffect(() => {
     if (token) {
       axios.get(CART_URL, config)
@@ -50,13 +56,6 @@ export default function ProductsComponent({ products, favorites, setFavorites, c
         });
     }
   }, [refresh]);
-
-
-  const config = {
-    headers: {
-      Authorization: `Bearer ${token}`
-    }
-  };
 
   function favoritesHandle(product) {
     if (!token) {

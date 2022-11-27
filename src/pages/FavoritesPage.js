@@ -1,80 +1,73 @@
 import { useState, useEffect, useContext } from 'react';
 import { TailSpin } from 'react-loader-spinner';
 import { BsArrowLeftCircleFill } from 'react-icons/bs';
+import { useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
 import axios from 'axios';
 import Swal from 'sweetalert2';
-import InfiniteScroll from 'react-infinite-scroll-component';
 
-import { PRODUCTS_URL } from '../constants.js';
+import { FAVS_URL } from '../constants.js';
+import { DataContext } from '../context/Auth.js';
 import { NavBarContext } from '../context/NavBarContext.js';
 import NavBarComponent from '../components/NavBarComponent.js';
-import FeaturedProductsComponent from '../components/FeaturedProductsComponent.js';
 import ProductsComponent from '../components/ProductsComponent.js';
 
-export default function HomePage() {
+export default function FavoritesPage() {
 
+  const { user, token } = useContext(DataContext);
   const {
-    searchQuestion,
-    setSearchQuestion,
     favorites,
     setFavorites,
     cart,
     setCart
   } = useContext(NavBarContext);
 
-  const [products, setProducts] = useState([]);
-  const [featuredProducts, setFeaturedProducts] = useState([])
+  const navigate = useNavigate();
+  const [favProducts, setFavProducts] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(false);
   const [refresh, setRefresh] = useState(0);
 
+  const config = {
+    headers: {
+      Authorization: `Bearer ${token}`
+    }
+  };
+
   useEffect(() => {
     setLoading(true);
-    axios.get(`${PRODUCTS_URL}/?search=${searchQuestion}`)
+    axios.get(FAVS_URL, config)
       .then(res => {
-        setProducts(res.data);
-        setFeaturedProducts(res.data.filter(product => product.featuredProduct === 'true'));
+        setFavProducts(res.data);
         setLoading(false);
       })
       .catch(() => {
         setLoading(false);
         setError(true);
       });
-  }, [refresh, searchQuestion]);
-
-  function fetchMoreData() {
-
-  };
-
-  function messageLoader() {
-    return (
-      <StyledLoader>
-        Carregando mais ofertas...
-        <TailSpin
-          height='40'
-          width='40'
-          color='#73C800'
-        />
-      </StyledLoader>
-    );
-  }
+  }, [refresh]);
 
   async function alertError() {
     await (Swal.fire({
       icon: 'error',
       title: 'Oops...',
-      text: 'Ocorreu um erro ao carregar os produtos!',
+      text: 'Ocorreu um erro ao carregar os seus favoritos',
+      showCancelButton: true,
+      cancelButtonText: 'Voltar à página principal',
       confirmButtonText: 'Tentar novamente',
-    })).then(() => {
-      setRefresh(Math.random());
+    })).then((result) => {
+      if (result.isConfirmed) {
+        setRefresh(Math.random());
+      } else {
+        navigate('/')
+      }
       setError(false);
     })
   };
 
   if (loading) {
     return (
-      <StyledHome>
+      <StyledFavorites>
         <NavBarComponent />
         <StyledContent loadingProp={loading}>
           <StyledLoader>
@@ -86,66 +79,47 @@ export default function HomePage() {
             />
           </StyledLoader>
         </StyledContent>
-      </StyledHome>
+      </StyledFavorites>
     );
   } else if (error) {
     alertError();
     return (
-      <StyledHome>
+      <StyledFavorites>
         <NavBarComponent />
         <StyledContent loadingProp={loading}>
         </StyledContent>
-      </StyledHome>
+      </StyledFavorites>
     );
   } else {
     return (
-      <StyledHome>
+      <StyledFavorites>
         <NavBarComponent />
         <StyledContent loadingProp={loading}>
-          {
-            searchQuestion.length > 0 ?
-              <StyledMessageSearch>
-                {'A sua busca por '}
-                <span>'{searchQuestion}'</span>
-                {' obteve '}
-                <span>{products.length}</span>
-                {' resultados:'}
-              </StyledMessageSearch>
-              :
-              <FeaturedProductsComponent
-                featuredProducts={featuredProducts}
-              />
-          }
-          <InfiniteScroll
-            dataLength={products.length}
-            next={fetchMoreData}
-            hasMore={false}
-            loader={messageLoader()}
-          >
-            <ProductsComponent
-              products={products}
-              favorites={favorites}
-              setFavorites={setFavorites}
-              cart={cart}
-              setCart={setCart}
-            />
-          </InfiniteScroll>
-          {
-            searchQuestion.length > 0 ?
-              <ButtonReset onClick={() => setSearchQuestion('')}>
-                <BsArrowLeftCircleFill />
-                Voltar
-              </ButtonReset>
-              :
-              ''
-          }
+          <StyledMessage>
+            <span>{user.name}</span>
+            {', você tem '}
+            <span>{favorites.length}</span>
+            {' produtos favoritos: '}
+          </StyledMessage>
+          <ProductsComponent
+            products={favProducts}
+            favorites={favorites}
+            setFavorites={setFavorites}
+            cart={cart}
+            setCart={setCart}
+          />
+
+          <ButtonReset onClick={() => navigate('/')}>
+            <BsArrowLeftCircleFill />
+            Voltar
+          </ButtonReset>
         </StyledContent>
-      </StyledHome>
+      </StyledFavorites>
     );
   }
 }
 
-const StyledHome = styled.main`
+const StyledFavorites = styled.main`
   width: 100%;
   height: 100%;
   min-height: 100vh;
@@ -172,7 +146,7 @@ const StyledContent = styled.section`
   justify-content: ${props => props.loadingProp ? 'center' : 'default'};
 `;
 
-const StyledMessageSearch = styled.span`
+const StyledMessage = styled.span`
   width: 100%;
   height: 70px;
   padding: 25px 0px;

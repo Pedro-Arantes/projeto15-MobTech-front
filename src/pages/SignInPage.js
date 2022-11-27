@@ -58,12 +58,14 @@ export default function SignInPage() {
 
   return (
     <PageContainer>
-      <Logo
-        title={formEnabled ? 'MobTech' : 'aguarde...'}
-      >
-        <img src={logo} alt='MobTech logo' />
-        <span>MobTech</span>
-      </Logo>
+      <Link to='/'>
+        <Logo
+          title={formEnabled ? 'Página inicial' : 'aguarde...'}
+        >
+          <img src={logo} alt='MobTech logo' />
+          <span>MobTech</span>
+        </Logo>
+      </Link>
       <Form onSubmit={signIn}>
         <Input
           type='email'
@@ -121,6 +123,10 @@ const PageContainer = styled.main`
   &:hover {
     cursor: default;
   }
+
+  a {
+    text-decoration: none;
+  }
 `;
 
 const Logo = styled.div`
@@ -146,6 +152,7 @@ const Logo = styled.div`
 
   &:hover {
     transform: scale(1.05);
+    cursor: pointer;
   }
 `;
 

@@ -43,6 +43,7 @@ export default function CartPage() {
     
     useEffect(()=>{
         const getCart = ()=>{
+          
             const config = {
                 headers: {
                     Authorization: `Bearer ${token}`

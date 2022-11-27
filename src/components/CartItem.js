@@ -75,6 +75,7 @@ export default function CartItem ({objt,setUpdate,token,navigate,setTeste,teste}
                 id:_id
             }
         }
+
         const tratarSucesso = (resposta) => {
             
             n = Number(teste) +1

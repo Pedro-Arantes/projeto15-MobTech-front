@@ -34,6 +34,19 @@ div{
 
 
 `
+
+export const  MainStyled = styled.main `
+height: 100%;
+width: 100%;
+display: flex;
+flex-direction: column;
+justify-content: center;
+color: white;
+
+margin-top: 100px;
+font-family: 'Montserrat', sans-serif;
+
+`
 export const BtnsDiv = styled.div`
 
 display: flex;

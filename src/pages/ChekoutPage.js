@@ -3,8 +3,7 @@ import {  useNavigate } from "react-router-dom";
 import { useState, useContext,useEffect } from 'react';
 import { DataContext } from "../context/Auth";
 import NavBarComponent from "../components/NavBarComponent";
-import { MainStyled } from "../assets/styles/CartStyle"
-import { BtnsDiv , BalanceStyled,TotalDiv,BtnCancel,BtnBuy,FormCheckout} from "../assets/styles/ChekoutStyle";
+import { MainStyled,BtnsDiv , BalanceStyled,TotalDiv,BtnCancel,BtnBuy,FormCheckout} from "../assets/styles/ChekoutStyle";
 import {BsTelephone} from  'react-icons/bs'
 import {HiOutlineMapPin} from  'react-icons/hi2'
 import Swal from 'sweetalert2'

@@ -1,6 +1,8 @@
 import { useState, useEffect, useContext } from 'react';
 import { TailSpin } from 'react-loader-spinner';
 import { FaArrowLeft } from 'react-icons/fa';
+import { ToastContainer } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 import styled from 'styled-components';
 import axios from 'axios';
 import Swal from 'sweetalert2';
@@ -78,6 +80,7 @@ export default function HomePage() {
   } else {
     return (
       <StyledHome>
+        <ToastContainer autoClose={1000} theme='colored' />
         <NavBarComponent />
         <StyledContent loadingProp={loading}>
           {

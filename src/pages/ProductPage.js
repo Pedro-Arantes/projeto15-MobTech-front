@@ -180,7 +180,7 @@ export default function ProductPage() {
               {selectedProduct.reviews}
             </StyledReviews>
           </StyledTop>
-          {selectedProduct.description}
+          <StyleDescription>{selectedProduct.description}</StyleDescription>
           <StyledButtons>
             <StyledButtonAddCart
               title={cart.includes(selectedProduct.id) ? 'adicionado ao carrinho' : 'adicionar ao carrinho'}
@@ -304,7 +304,7 @@ const StyledModelPrice = styled.section`
   > h1 {
     margin: 6px 0px;
     font-weight: 600;
-    font-size: 25px;
+    font-size: 20px;
     line-height: 27px;
     color: #FFFFFF
   }
@@ -319,7 +319,7 @@ const StyledModelPrice = styled.section`
   > h3 {
     margin: 6px 0px;
     font-weight: 600;
-    font-size: 23px;
+    font-size: 20px;
     line-height: 25px;
     color: #FFFFFF
   }
@@ -338,6 +338,11 @@ const StyledReviews = styled.section`
     color: #FFC567;
     margin: 0px 5px;
   }
+`;
+
+const StyleDescription = styled.section`
+  font-size: 11px;
+  line-height: 13px;
 `;
 
 const StyledButtons = styled.div`

@@ -19,7 +19,7 @@ export default function NavBarComponent() {
   return (
     <StyledNavBarComponent>
       <Link to='/'>
-        <Logo title='Página inicial'>
+        <Logo title='Página inicial' onClick={() => setSearchQuestion('')}>
           <img src={logo} alt='MobTech logo' />
           MobTech
         </Logo>

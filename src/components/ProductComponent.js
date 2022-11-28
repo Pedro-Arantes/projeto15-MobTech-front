@@ -212,7 +212,7 @@ export default function ProductComponent({ product }) {
 }
 
 const StyledProduct = styled.div`
-  width: 185px;
+  width: 165px;
   height: 230px;
   background: linear-gradient(180deg, rgba(115, 115, 115, .5) 0%, rgba(60, 60, 60, .2) 100%);
   border-radius: 14px;
@@ -316,7 +316,7 @@ const StyledAddCart = styled.button`
   width: 35px;
   height: 35px;
   position: absolute;
-  bottom: 0;
+  bottom: -10px;
   right: 0;
   background-color: ${props => props.inCart ? '#75B038' : '#FFFFFF'};
   border-radius: 20px;

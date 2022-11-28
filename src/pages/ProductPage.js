@@ -25,6 +25,7 @@ export default function ProductPage() {
 
   const navigate = useNavigate();
   const [loadingFav, setLoadingFav] = useState(false);
+  const [loadingCart, setLoadingCart] = useState(false);
 
   const config = {
     headers: {
@@ -34,7 +35,7 @@ export default function ProductPage() {
 
   function favoritesHandle(product) {
     if (!token) {
-      navigate('/login')
+      navigate('/login');
     } else {
       setLoadingFav(true);
       if (!favorites.includes(product.id)) {
@@ -52,7 +53,7 @@ export default function ProductPage() {
               title: err.response.data.message,
               showConfirmButton: false,
               timer: 1500
-            })
+            });
           });
       } else {
         axios.delete(`${FAVS_URL}/${product.id}`, config)
@@ -69,7 +70,7 @@ export default function ProductPage() {
               title: err.response.data.message,
               showConfirmButton: false,
               timer: 1500
-            })
+            });
           });
       }
     }
@@ -77,11 +78,10 @@ export default function ProductPage() {
 
   function cartHandle(product) {
     if (!token) {
-      navigate('/login')
+      navigate('/login');
     } else {
       if (!cart.includes(product.id)) {
-        const newCart = [...cart, product.id];
-        setCart(newCart);
+        setLoadingCart(true);
         axios.post(
           CART_URL, {
           model: product.model,
@@ -89,16 +89,20 @@ export default function ProductPage() {
           img: product.image_URL,
           amount: 1
         }, config)
-          .then()
+          .then(() => {
+            const newCart = [...cart, product.id];
+            setCart(newCart);
+            setLoadingCart(false);
+          })
           .catch(err => {
-            console.log(err.response.data);
+            setLoadingCart(false);
             Swal.fire({
               position: 'top-end',
               icon: 'error',
               title: err.response.data.message,
               showConfirmButton: false,
               timer: 1500
-            })
+            });
           });
       }
     }
@@ -147,7 +151,7 @@ export default function ProductPage() {
     <StyledProduct>
       <NavBarComponent />
       <StyledContent>
-        <StyledBackButton 
+        <StyledBackButton
           title={'Voltar para página principal'}
           onClick={() => navigate('/')}>
           <FaArrowLeft />
@@ -179,18 +183,25 @@ export default function ProductPage() {
           {selectedProduct.description}
           <StyledButtons>
             <StyledButtonAddCart
-              title={cart.includes(selectedProduct.id) ? 'remover do carrinho' : 'adicionar ao carrinho'}
+              title={cart.includes(selectedProduct.id) ? 'adicionado ao carrinho' : 'adicionar ao carrinho'}
               inCart={cart.includes(selectedProduct.id)}
-              onClick={() => cartHandle(selectedProduct)} >
-              {cart.includes(selectedProduct.id) ? 'adicionado ao carrinho' : 'adicionar ao carrinho'}
-              {cart.includes(selectedProduct.id) ? <BsCartCheckFill /> : <BsCartPlus />}
+              onClick={() => cartHandle(selectedProduct)} 
+              disabled={cart.includes(selectedProduct.id)}
+            >
+              {(loadingCart ? 
+                spinner() :
+                    <>
+                      {cart.includes(selectedProduct.id) ? 'adicionado ao carrinho' : 'adicionar ao carrinho'}
+                      {cart.includes(selectedProduct.id) ? <BsCartCheckFill /> : <BsCartPlus />}
+                    </>
+              )}
             </StyledButtonAddCart>
             <StyledButtonFav
               title={favorites.includes(selectedProduct.id) ? 'remover dos favoritos' : 'adicionar aos favoritos'}
               onClick={() => favoritesHandle(selectedProduct)}
               disabled={loadingFav}
             >
-              {(loadingFav ? 
+              {(loadingFav ?
                 spinner() :
                 favorites.includes(selectedProduct.id) ? <BsHeartFill /> : <BsHeart />
               )}
@@ -369,6 +380,11 @@ const StyledButtonAddCart = styled.button`
   &:hover {
     transform: scale(1.05);
     cursor: pointer;
+  }
+
+  &:disabled {
+    cursor: default;
+    transform: none;
   }
 `;
 

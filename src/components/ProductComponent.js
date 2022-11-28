@@ -12,7 +12,6 @@ import { FAVS_URL, CART_URL } from '../constants.js';
 
 export default function ProductComponent({ product }) {
   const { token } = useContext(DataContext);
-
   const {
     favorites,
     setFavorites,
@@ -22,9 +21,8 @@ export default function ProductComponent({ product }) {
   } = useContext(ProductContext);
 
   const navigate = useNavigate();
-  const [refresh, setRefresh] = useState(0);
   const [loadingFav, setLoadingFav] = useState(false);
-
+  const [loadingCart, setLoadingCart] = useState(false);
 
   const config = {
     headers: {
@@ -36,9 +34,11 @@ export default function ProductComponent({ product }) {
     if (token) {
       axios.get(CART_URL, config)
         .then(res => {
-          setCart(res.data.cart.map(item => item._id));
+          setCart(res.data.cart.map(product => product.productId));
+          setLoadingCart(false);
         })
         .catch(err => {
+          console.log(err)
           if (err.response.status !== 401) {
             Swal.fire({
               position: 'top-end',
@@ -46,7 +46,7 @@ export default function ProductComponent({ product }) {
               title: err.data,
               showConfirmButton: false,
               timer: 1500
-            })
+            });
           }
         });
 
@@ -64,11 +64,11 @@ export default function ProductComponent({ product }) {
               title: err.response.data.message,
               showConfirmButton: false,
               timer: 1500
-            })
+            });
           }
         });
     }
-  }, [refresh]);
+  }, []);
 
   function spinner() {
     return (
@@ -87,7 +87,7 @@ export default function ProductComponent({ product }) {
   function favoritesHandle(e, product) {
     e.stopPropagation();
     if (!token) {
-      navigate('/login')
+      navigate('/login');
     } else {
       setLoadingFav(true);
       if (!favorites.includes(product.id)) {
@@ -122,7 +122,7 @@ export default function ProductComponent({ product }) {
               title: err.response.data.message,
               showConfirmButton: false,
               timer: 1500
-            })
+            });
           });
       }
     }
@@ -131,30 +131,31 @@ export default function ProductComponent({ product }) {
   function cartHandle(e, product) {
     e.stopPropagation();
     if (!token) {
-      navigate('/login')
+      navigate('/login');
     } else {
-      if (!cart.includes(product.id)) {
-        const newCart = [...cart, product.id];
-        setCart(newCart);
-        axios.post(
-          CART_URL, {
-          model: product.model,
-          price: product.price,
-          img: product.image_URL,
-          amount: 1
-        }, config)
-          .then()
-          .catch(err => {
-            console.log(err.response.data);
-            Swal.fire({
-              position: 'top-end',
-              icon: 'error',
-              title: err.response.data.message,
-              showConfirmButton: false,
-              timer: 1500
-            })
+      setLoadingCart(true);
+      axios.post(
+        CART_URL, {
+        model: product.model,
+        price: product.price,
+        img: product.image_URL,
+        amount: 1
+      }, config)
+        .then(() => {
+          const newCart = [...cart, product.id];
+          setCart(newCart);
+          setLoadingCart(false);
+        })
+        .catch(err => {
+          setLoadingCart(false);
+          Swal.fire({
+            position: 'top-end',
+            icon: 'error',
+            title: err.response.data.message,
+            showConfirmButton: false,
+            timer: 1500
           });
-      }
+        });
     }
   }
 
@@ -197,11 +198,14 @@ export default function ProductComponent({ product }) {
         </h2>
       </StyledModelPrice>
       <StyledAddCart
-        title={cart.includes(product.id) ? 'remover do carrinho' : 'adicionar ao carrinho'}
+        title={cart.includes(product.id) ? 'adicionado ao carrinho' : 'adicionar ao carrinho'}
         inCart={cart.includes(product.id)}
         onClick={(e) => cartHandle(e, product)}
       >
-        {cart.includes(product.id) ? <BsCartCheckFill /> : <BsCartPlus />}
+        {(loadingCart ?
+          spinner() :
+          cart.includes(product.id) ? <BsCartCheckFill /> : <BsCartPlus />
+        )}
       </StyledAddCart>
     </StyledProduct>
   );
@@ -322,6 +326,9 @@ const StyledAddCart = styled.button`
   outline: none;
   transition: .7s;
   filter: drop-shadow(0px 4px 4px rgba(0, 0, 0, 0.25));
+  display: flex;
+  justify-content: center;
+  align-items: center;
 
   > svg {
     font-size: 18px;

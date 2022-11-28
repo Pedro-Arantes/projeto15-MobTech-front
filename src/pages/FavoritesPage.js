@@ -54,7 +54,7 @@ export default function FavoritesPage() {
       if (result.isConfirmed) {
         setRefresh(Math.random());
       } else {
-        navigate('/')
+        navigate('/');
       }
       setError(false);
     })

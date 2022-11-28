@@ -14,24 +14,16 @@ import ProductComponent from '../components/ProductComponent.js';
 
 export default function HomePage() {
 
-  const { token } = useContext(DataContext);
-
   const {
     searchQuestion,
-    setSearchQuestion
+    setSearchQuestion,
   } = useContext(ProductContext);
 
   const [products, setProducts] = useState([]);
-  const [featuredProducts, setFeaturedProducts] = useState([])
+  const [featuredProducts, setFeaturedProducts] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(false);
   const [refresh, setRefresh] = useState(0);
-
-  const config = {
-    headers: {
-      Authorization: `Bearer ${token}`
-    }
-  };
 
   useEffect(() => {
     setLoading(true);

@@ -8,8 +8,8 @@ export const SIGN_IN_URL = 'http://localhost:5000/sign_in';
 
 export const SIGN_UP_URL = 'http://localhost:5000/sign_up';
 
-export const FAVS_URL = 'http://localhost:5000/favorites'; */
-
+export const FAVS_URL = 'http://localhost:5000/favorites';
+ */
 export const PRODUCTS_URL = 'https://mobtech.onrender.com/products';
 
 export const CART_URL = 'https://mobtech.onrender.com/cart';

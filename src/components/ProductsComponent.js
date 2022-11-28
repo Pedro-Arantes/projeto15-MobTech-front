@@ -1,19 +1,33 @@
 import { useContext, useState, useEffect } from 'react';
-import { BsStarHalf, BsHeartFill, BsHeart, BsCartPlus, BsCartCheckFill } from 'react-icons/bs';
+import { BsStarHalf, BsHeartFill, BsCartPlus, BsCartCheckFill } from 'react-icons/bs';
 import { useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
 import axios from 'axios';
 import Swal from 'sweetalert2';
 
 import { DataContext } from '../context/Auth.js';
+import { ProductContext } from '../context/ProductContext.js';
 import { FAVS_URL, CART_URL } from '../constants.js';
 
-export default function ProductsComponent({ products, favorites, setFavorites, cart, setCart }) {
+export default function ProductsComponent({ products }) {
 
   const { token } = useContext(DataContext);
+  const {
+    favorites,
+    setFavorites,
+    cart,
+    setCart,
+    setSelectedProduct
+  } = useContext(ProductContext);
 
   const navigate = useNavigate();
   const [refresh, setRefresh] = useState(0);
+
+  const config = {
+    headers: {
+      Authorization: `Bearer ${token}`
+    }
+  };
 
   useEffect(() => {
     if (token) {
@@ -51,14 +65,8 @@ export default function ProductsComponent({ products, favorites, setFavorites, c
     }
   }, [refresh]);
 
-
-  const config = {
-    headers: {
-      Authorization: `Bearer ${token}`
-    }
-  };
-
-  function favoritesHandle(product) {
+  function favoritesHandle(e, product) {
+    e.stopPropagation();
     if (!token) {
       navigate('/login')
     } else {
@@ -90,7 +98,8 @@ export default function ProductsComponent({ products, favorites, setFavorites, c
     }
   }
 
-  function cartHandle(product) {
+  function cartHandle(e, product) {
+    e.stopPropagation();
     if (!token) {
       navigate('/login')
     } else {
@@ -126,6 +135,10 @@ export default function ProductsComponent({ products, favorites, setFavorites, c
           <StyledProduct
             key={product.id}
             title={product.model}
+            onClick={() => {
+              setSelectedProduct(product);
+              navigate('/produto');
+            }}
           >
             <StyledTop>
               <StyledReviews>
@@ -135,9 +148,9 @@ export default function ProductsComponent({ products, favorites, setFavorites, c
               <StyledFavorite
                 title={favorites.includes(product.id) ? 'remover dos favoritos' : 'adicionar aos favoritos'}
                 inFavorite={favorites.includes(product.id)}
-                onClick={() => favoritesHandle(product)}
+                onClick={(e) => favoritesHandle(e, product)}
               >
-                {favorites.includes(product.id) ? <BsHeartFill /> : <BsHeart />}
+                <BsHeartFill />
               </StyledFavorite>
             </StyledTop>
             <img
@@ -158,7 +171,7 @@ export default function ProductsComponent({ products, favorites, setFavorites, c
             <StyledAddCart
               title={cart.includes(product.id) ? 'remover do carrinho' : 'adicionar ao carrinho'}
               inCart={cart.includes(product.id)}
-              onClick={() => cartHandle(product)}
+              onClick={(e) => cartHandle(e, product)}
             >
               {cart.includes(product.id) ? <BsCartCheckFill /> : <BsCartPlus />}
             </StyledAddCart>

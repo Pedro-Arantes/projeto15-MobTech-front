@@ -1,30 +1,29 @@
 import { BsHeartFill, BsCart3, BsSearch } from 'react-icons/bs';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, Link } from 'react-router-dom';
 import { useState, useContext } from 'react';
 import Swal from 'sweetalert2';
 import styled from 'styled-components';
 
 import logo from '../assets/images/borsalino.png';
 import person from '../assets/images/person-login-icon.png';
-import { NavBarContext } from '../context/NavBarContext.js';
+import { ProductContext } from '../context/ProductContext.js';
 import { DataContext } from '../context/Auth.js';
 
 export default function NavBarComponent() {
 
   const { user, token } = useContext(DataContext);
-
+  const { setSearchQuestion, favorites, cart, setSelectedProduct } = useContext(ProductContext);
   const navigate = useNavigate();
-  const { setSearchQuestion, favorites, cart } = useContext(NavBarContext);
-
   const [form, setForm] = useState('');
 
-  const GoHome = () => navigate("/");
   return (
     <StyledNavBarComponent>
-      <Logo onClick={GoHome}>
-        <img src={logo} alt='MobTech logo' />
-        MobTech
-      </Logo>
+      <Link to='/'>
+        <Logo title='Página inicial'>
+          <img src={logo} alt='MobTech logo' />
+          MobTech
+        </Logo>
+      </Link>
       <Menu>
         <button
           title='Pesquisar'
@@ -68,7 +67,6 @@ export default function NavBarComponent() {
         <button
           title='Carrinho'
           onClick={() => {
-            console.log('clicou')
             token ? navigate('/carrinho') : navigate('/login');
           }}
         >
@@ -109,6 +107,10 @@ const StyledNavBarComponent = styled.nav`
   top: 0;
   left: 0;
   z-index: 1;
+
+  a {
+    text-decoration: none;
+  }
 `;
 
 const Logo = styled.button`
@@ -122,10 +124,16 @@ const Logo = styled.button`
   outline: none;
   border: none;
   margin-right: 15px;
+  transition: 1s;
 
   img {
     margin: 0px 2px;
     width: 50px;
+  }
+
+  &:hover {
+    transform: scale(1.05);
+    cursor: pointer;
   }
 `;
 
@@ -170,14 +178,14 @@ const StyleIcon = styled.div`
     visibility: ${props => props.show ? 'visible' : 'hidden'};
     width: 16px;
     border-radius: 8px;
-    color: #000000;
+    color: #FFFFFF;
     font-family: 'Montserrat', sans-serif;
     font-weight: 600;
     padding: 2px;
     position: absolute;
     top: 0;
     right: -6px;
-    background-color: #75B038;
+    background-color: #FF4949;
     font-size: 10px;
     text-align: center;
   }

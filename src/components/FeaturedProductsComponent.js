@@ -1,12 +1,26 @@
 import styled from 'styled-components';
+import { useContext } from 'react';
+import { useNavigate } from 'react-router-dom';
+
+import { ProductContext } from '../context/ProductContext.js';
 
 export default function FeaturedProductsComponent({ featuredProducts }) {
 
+  const { setSelectedProduct} = useContext(ProductContext);
+  const navigate = useNavigate();
+
   return (
     <StyledfeaturedProducts>
-      {featuredProducts.map((product, index) => {
+      {featuredProducts.map(product => {
         return (
-          <StyledfeaturedProduct key={index}>
+          <StyledfeaturedProduct 
+            key={product.id}
+            title={product.model}
+            onClick={() => {
+              setSelectedProduct(product);
+              navigate('/produto');
+            }}
+          >
             <div>
               <div>
                 <h1>{product.model}</h1>
@@ -45,6 +59,10 @@ const StyledfeaturedProducts = styled.section`
     background-color: #646464;
     border-radius: 20px;  
     border: 2px solid #75B038;
+  }
+
+  &:hover {
+    cursor: default;
   }
 `;
 
@@ -87,6 +105,7 @@ const StyledfeaturedProduct = styled.div`
 
       &:hover {
         transform: scale(1.1);
+        cursor: pointer;
       }
     }
 
@@ -110,5 +129,9 @@ const StyledfeaturedProduct = styled.div`
     height: 100%;
     object-fit: contain;
     overflow: hidden;
+  }
+
+  &:hover {
+    cursor: pointer;
   }
 `;

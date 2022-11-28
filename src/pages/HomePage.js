@@ -7,8 +7,8 @@ import Swal from 'sweetalert2';
 import InfiniteScroll from 'react-infinite-scroll-component';
 
 import { PRODUCTS_URL } from '../constants.js';
+import { ProductContext } from '../context/ProductContext.js';
 import NavBarComponent from '../components/NavBarComponent.js';
-import { NavBarContext } from '../context/NavBarContext.js';
 import FeaturedProductsComponent from '../components/FeaturedProductsComponent.js';
 import ProductsComponent from '../components/ProductsComponent.js';
 
@@ -17,11 +17,7 @@ export default function HomePage() {
   const {
     searchQuestion,
     setSearchQuestion,
-    favorites,
-    setFavorites,
-    cart,
-    setCart
-  } = useContext(NavBarContext);
+  } = useContext(ProductContext);
 
   const [products, setProducts] = useState([]);
   const [featuredProducts, setFeaturedProducts] = useState([])
@@ -65,7 +61,7 @@ export default function HomePage() {
       icon: 'error',
       title: 'Oops...',
       text: 'Ocorreu um erro ao carregar os produtos!',
-      confirmButtonText: 'TENTAR NOVAMENTE',
+      confirmButtonText: 'Tentar novamente',
     })).then(() => {
       setRefresh(Math.random());
       setError(false);
@@ -124,10 +120,6 @@ export default function HomePage() {
           >
             <ProductsComponent
               products={products}
-              favorites={favorites}
-              setFavorites={setFavorites}
-              cart={cart}
-              setCart={setCart}
             />
           </InfiniteScroll>
           {

@@ -1,6 +1,7 @@
 import { useContext, useState, useEffect } from 'react';
 import { BsStarHalf, BsHeartFill, BsCartPlus, BsCartCheckFill } from 'react-icons/bs';
 import { useNavigate } from 'react-router-dom';
+import { Oval } from 'react-loader-spinner';
 import styled from 'styled-components';
 import axios from 'axios';
 import Swal from 'sweetalert2';
@@ -9,8 +10,7 @@ import { DataContext } from '../context/Auth.js';
 import { ProductContext } from '../context/ProductContext.js';
 import { FAVS_URL, CART_URL } from '../constants.js';
 
-export default function ProductsComponent({ products }) {
-
+export default function ProductComponent({ product }) {
   const { token } = useContext(DataContext);
   const {
     favorites,
@@ -21,7 +21,8 @@ export default function ProductsComponent({ products }) {
   } = useContext(ProductContext);
 
   const navigate = useNavigate();
-  const [refresh, setRefresh] = useState(0);
+  const [loadingFav, setLoadingFav] = useState(false);
+  const [loadingCart, setLoadingCart] = useState(false);
 
   const config = {
     headers: {
@@ -33,9 +34,11 @@ export default function ProductsComponent({ products }) {
     if (token) {
       axios.get(CART_URL, config)
         .then(res => {
-          setCart(res.data.cart.map(item => item._id));
+          setCart(res.data.cart.map(product => product.productId));
+          setLoadingCart(false);
         })
         .catch(err => {
+          console.log(err)
           if (err.response.status !== 401) {
             Swal.fire({
               position: 'top-end',
@@ -43,15 +46,17 @@ export default function ProductsComponent({ products }) {
               title: err.data,
               showConfirmButton: false,
               timer: 1500
-            })
+            });
           }
         });
 
       axios.get(FAVS_URL, config)
         .then(res => {
           setFavorites(res.data.map(product => product.productId));
+          setLoadingFav(false);
         })
         .catch(err => {
+          setLoadingFav(false);
           if (err.response.status !== 401) {
             Swal.fire({
               position: 'top-end',
@@ -59,21 +64,41 @@ export default function ProductsComponent({ products }) {
               title: err.response.data.message,
               showConfirmButton: false,
               timer: 1500
-            })
+            });
           }
         });
     }
-  }, [refresh]);
+  }, []);
+
+  function spinner() {
+    return (
+      <Oval
+        height={13}
+        width={13}
+        color="#4fa94d"
+        ariaLabel='oval-loading'
+        secondaryColor="#FFFFFF"
+        strokeWidth={10}
+        strokeWidthSecondary={10}
+      />
+    );
+  }
 
   function favoritesHandle(e, product) {
     e.stopPropagation();
     if (!token) {
-      navigate('/login')
+      navigate('/login');
     } else {
+      setLoadingFav(true);
       if (!favorites.includes(product.id)) {
         axios.post(`${FAVS_URL}/${product.id}`, {}, config)
-          .then(() => setRefresh(Math.random()))
+          .then(() => {
+            const newFavorites = [...favorites, product.id];
+            setFavorites(newFavorites);
+            setLoadingFav(false);
+          })
           .catch(err => {
+            setLoadingFav(false);
             Swal.fire({
               position: 'top-end',
               icon: 'error',
@@ -84,15 +109,20 @@ export default function ProductsComponent({ products }) {
           });
       } else {
         axios.delete(`${FAVS_URL}/${product.id}`, config)
-          .then(() => setRefresh(Math.random()))
+          .then(() => {
+            const newFavorites = favorites.filter(i => i !== product.id);
+            setFavorites(newFavorites);
+            setLoadingFav(false);
+          })
           .catch(err => {
+            setLoadingFav(false);
             Swal.fire({
               position: 'top-end',
               icon: 'error',
               title: err.response.data.message,
               showConfirmButton: false,
               timer: 1500
-            })
+            });
           });
       }
     }
@@ -101,95 +131,85 @@ export default function ProductsComponent({ products }) {
   function cartHandle(e, product) {
     e.stopPropagation();
     if (!token) {
-      navigate('/login')
+      navigate('/login');
     } else {
-      if (!cart.includes(product.id)) {
-        const newCart = [...cart, product.id];
-        setCart(newCart);
-        axios.post(
-          CART_URL, {
-          model: product.model,
-          price: product.price,
-          img: product.image_URL,
-          amount: 1
-        }, config)
-          .then()
-          .catch(err => {
-            console.log(err.response.data);
-            Swal.fire({
-              position: 'top-end',
-              icon: 'error',
-              title: err.response.data.message,
-              showConfirmButton: false,
-              timer: 1500
-            })
+      setLoadingCart(true);
+      axios.post(
+        CART_URL, {
+        model: product.model,
+        price: product.price,
+        img: product.image_URL,
+        amount: 1
+      }, config)
+        .then(() => {
+          const newCart = [...cart, product.id];
+          setCart(newCart);
+          setLoadingCart(false);
+        })
+        .catch(err => {
+          setLoadingCart(false);
+          Swal.fire({
+            position: 'top-end',
+            icon: 'error',
+            title: err.response.data.message,
+            showConfirmButton: false,
+            timer: 1500
           });
-      }
+        });
     }
   }
 
   return (
-    <StyledProducts>
-      {products.map(product => {
-        return (
-          <StyledProduct
-            key={product.id}
-            title={product.model}
-            onClick={() => {
-              setSelectedProduct(product);
-              navigate('/produto');
-            }}
-          >
-            <StyledTop>
-              <StyledReviews>
-                <BsStarHalf />
-                <span>{product.reviews}</span>
-              </StyledReviews>
-              <StyledFavorite
-                title={favorites.includes(product.id) ? 'remover dos favoritos' : 'adicionar aos favoritos'}
-                inFavorite={favorites.includes(product.id)}
-                onClick={(e) => favoritesHandle(e, product)}
-              >
-                <BsHeartFill />
-              </StyledFavorite>
-            </StyledTop>
-            <img
-              src={product.image_URL}
-              alt={`Foto ${product.model} ${product.version}`}
-            />
-            <StyledModelPrice>
-              <h1>{product.model}</h1>
-              <h2>
-                {
-                  Number(product.price).toLocaleString(
-                    'pt-BR',
-                    { style: 'currency', currency: 'BRL' }
-                  )
-                }
-              </h2>
-            </StyledModelPrice>
-            <StyledAddCart
-              title={cart.includes(product.id) ? 'remover do carrinho' : 'adicionar ao carrinho'}
-              inCart={cart.includes(product.id)}
-              onClick={(e) => cartHandle(e, product)}
-            >
-              {cart.includes(product.id) ? <BsCartCheckFill /> : <BsCartPlus />}
-            </StyledAddCart>
-          </StyledProduct>
-        );
-      })}
-    </StyledProducts>
+    <StyledProduct
+      key={product.id}
+      title={product.model}
+      onClick={() => {
+        setSelectedProduct(product);
+        navigate('/produto');
+      }}
+    >
+      <StyledTop>
+        <StyledReviews>
+          <BsStarHalf />
+          <span>{product.reviews}</span>
+        </StyledReviews>
+        <StyledFavorite
+          disabled={loadingFav}
+          title={favorites.includes(product.id) ? 'remover dos favoritos' : 'adicionar aos favoritos'}
+          inFavorite={favorites.includes(product.id)}
+          onClick={(e) => favoritesHandle(e, product)}
+        >
+          {loadingFav ? spinner() : <BsHeartFill />}
+        </StyledFavorite>
+      </StyledTop>
+      <img
+        src={product.image_URL}
+        alt={`Foto ${product.model} ${product.version}`}
+      />
+      <StyledModelPrice>
+        <h1>{product.model}</h1>
+        <h2>
+          {
+            Number(product.price).toLocaleString(
+              'pt-BR',
+              { style: 'currency', currency: 'BRL' }
+            )
+          }
+        </h2>
+      </StyledModelPrice>
+      <StyledAddCart
+        title={cart.includes(product.id) ? 'adicionado ao carrinho' : 'adicionar ao carrinho'}
+        inCart={cart.includes(product.id)}
+        onClick={(e) => cartHandle(e, product)}
+      >
+        {(loadingCart ?
+          spinner() :
+          cart.includes(product.id) ? <BsCartCheckFill /> : <BsCartPlus />
+        )}
+      </StyledAddCart>
+    </StyledProduct>
   );
 }
-
-const StyledProducts = styled.section`
-  width: 100%;
-  margin-bottom: 20px;
-  box-sizing: border-box;
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: center;
-`;
 
 const StyledProduct = styled.div`
   width: 185px;
@@ -247,6 +267,9 @@ const StyledFavorite = styled.button`
   padding: 0;
   transition: .7s;
   text-align: center;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 
   > span {
     text-align: center;
@@ -303,6 +326,9 @@ const StyledAddCart = styled.button`
   outline: none;
   transition: .7s;
   filter: drop-shadow(0px 4px 4px rgba(0, 0, 0, 0.25));
+  display: flex;
+  justify-content: center;
+  align-items: center;
 
   > svg {
     font-size: 18px;

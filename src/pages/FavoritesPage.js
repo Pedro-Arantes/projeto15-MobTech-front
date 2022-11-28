@@ -10,7 +10,7 @@ import { FAVS_URL } from '../constants.js';
 import { DataContext } from '../context/Auth.js';
 import { ProductContext } from '../context/ProductContext.js';
 import NavBarComponent from '../components/NavBarComponent.js';
-import ProductsComponent from '../components/ProductsComponent.js';
+import ProductComponent from '../components/ProductComponent.js';
 
 export default function FavoritesPage() {
 
@@ -54,7 +54,7 @@ export default function FavoritesPage() {
       if (result.isConfirmed) {
         setRefresh(Math.random());
       } else {
-        navigate('/')
+        navigate('/');
       }
       setError(false);
     })
@@ -101,9 +101,13 @@ export default function FavoritesPage() {
             <span>{favorites.length}</span>
             {' produtos favoritos: '}
           </StyledMessage>
-          <ProductsComponent
-            products={favProducts}
-          />
+          <StyledProducts>
+            {favProducts.map(product =>
+              <ProductComponent
+                product={product}
+              />
+            )}
+          </StyledProducts>
         </StyledContent>
       </StyledFavorites>
     );
@@ -187,4 +191,13 @@ const StyledLoader = styled.section`
   > svg {
     margin: 20px;
   }
+`;
+
+const StyledProducts = styled.section`
+  width: 100%;
+  margin-bottom: 20px;
+  box-sizing: border-box;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
 `;

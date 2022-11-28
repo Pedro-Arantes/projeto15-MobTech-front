@@ -1,7 +1,8 @@
 import { BsHeartFill, BsCartPlus, BsStarHalf, BsCartCheckFill, BsHeart } from 'react-icons/bs';
 import { FaArrowLeft } from 'react-icons/fa';
-import { useContext } from 'react';
+import { useContext, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { Oval } from 'react-loader-spinner';
 import styled from 'styled-components';
 import axios from 'axios';
 import Swal from 'sweetalert2';
@@ -23,6 +24,8 @@ export default function ProductPage() {
   } = useContext(ProductContext);
 
   const navigate = useNavigate();
+  const [loadingFav, setLoadingFav] = useState(false);
+  const [loadingCart, setLoadingCart] = useState(false);
 
   const config = {
     headers: {
@@ -32,37 +35,42 @@ export default function ProductPage() {
 
   function favoritesHandle(product) {
     if (!token) {
-      navigate('/login')
+      navigate('/login');
     } else {
+      setLoadingFav(true);
       if (!favorites.includes(product.id)) {
         axios.post(`${FAVS_URL}/${product.id}`, {}, config)
           .then(() => {
             const newFavorites = [...favorites, product.id];
             setFavorites(newFavorites);
+            setLoadingFav(false);
           })
           .catch(err => {
+            setLoadingFav(false);
             Swal.fire({
               position: 'top-end',
               icon: 'error',
               title: err.response.data.message,
               showConfirmButton: false,
               timer: 1500
-            })
+            });
           });
       } else {
         axios.delete(`${FAVS_URL}/${product.id}`, config)
           .then(() => {
             const newFavorites = favorites.filter(i => i !== product.id);
             setFavorites(newFavorites);
+            setLoadingFav(false);
           })
           .catch(err => {
+            setLoadingFav(false);
             Swal.fire({
               position: 'top-end',
               icon: 'error',
               title: err.response.data.message,
               showConfirmButton: false,
               timer: 1500
-            })
+            });
           });
       }
     }
@@ -70,11 +78,10 @@ export default function ProductPage() {
 
   function cartHandle(product) {
     if (!token) {
-      navigate('/login')
+      navigate('/login');
     } else {
       if (!cart.includes(product.id)) {
-        const newCart = [...cart, product.id];
-        setCart(newCart);
+        setLoadingCart(true);
         axios.post(
           CART_URL, {
           model: product.model,
@@ -82,16 +89,20 @@ export default function ProductPage() {
           img: product.image_URL,
           amount: 1
         }, config)
-          .then()
+          .then(() => {
+            const newCart = [...cart, product.id];
+            setCart(newCart);
+            setLoadingCart(false);
+          })
           .catch(err => {
-            console.log(err.response.data);
+            setLoadingCart(false);
             Swal.fire({
               position: 'top-end',
               icon: 'error',
               title: err.response.data.message,
               showConfirmButton: false,
               timer: 1500
-            })
+            });
           });
       }
     }
@@ -112,6 +123,20 @@ export default function ProductPage() {
     })
   };
 
+  function spinner() {
+    return (
+      <Oval
+        height={13}
+        width={13}
+        color="#4fa94d"
+        ariaLabel='oval-loading'
+        secondaryColor="#606060"
+        strokeWidth={10}
+        strokeWidthSecondary={10}
+      />
+    );
+  }
+
   if (!selectedProduct) {
     alertError();
     return (
@@ -126,7 +151,7 @@ export default function ProductPage() {
     <StyledProduct>
       <NavBarComponent />
       <StyledContent>
-        <StyledBackButton 
+        <StyledBackButton
           title={'Voltar para página principal'}
           onClick={() => navigate('/')}>
           <FaArrowLeft />
@@ -158,17 +183,28 @@ export default function ProductPage() {
           {selectedProduct.description}
           <StyledButtons>
             <StyledButtonAddCart
-              title={cart.includes(selectedProduct.id) ? 'remover do carrinho' : 'adicionar ao carrinho'}
+              title={cart.includes(selectedProduct.id) ? 'adicionado ao carrinho' : 'adicionar ao carrinho'}
               inCart={cart.includes(selectedProduct.id)}
-              onClick={() => cartHandle(selectedProduct)} >
-              {cart.includes(selectedProduct.id) ? 'adicionado ao carrinho' : 'adicionar ao carrinho'}
-              {cart.includes(selectedProduct.id) ? <BsCartCheckFill /> : <BsCartPlus />}
+              onClick={() => cartHandle(selectedProduct)} 
+              disabled={cart.includes(selectedProduct.id)}
+            >
+              {(loadingCart ? 
+                spinner() :
+                    <>
+                      {cart.includes(selectedProduct.id) ? 'adicionado ao carrinho' : 'adicionar ao carrinho'}
+                      {cart.includes(selectedProduct.id) ? <BsCartCheckFill /> : <BsCartPlus />}
+                    </>
+              )}
             </StyledButtonAddCart>
             <StyledButtonFav
               title={favorites.includes(selectedProduct.id) ? 'remover dos favoritos' : 'adicionar aos favoritos'}
               onClick={() => favoritesHandle(selectedProduct)}
+              disabled={loadingFav}
             >
-              {favorites.includes(selectedProduct.id) ? <BsHeartFill /> : <BsHeart />}
+              {(loadingFav ?
+                spinner() :
+                favorites.includes(selectedProduct.id) ? <BsHeartFill /> : <BsHeart />
+              )}
             </StyledButtonFav>
           </StyledButtons>
         </StyledContainerDescription>
@@ -344,6 +380,11 @@ const StyledButtonAddCart = styled.button`
   &:hover {
     transform: scale(1.05);
     cursor: pointer;
+  }
+
+  &:disabled {
+    cursor: default;
+    transform: none;
   }
 `;
 

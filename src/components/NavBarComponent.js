@@ -72,7 +72,7 @@ export default function NavBarComponent() {
         >
           <StyleIcon show={(cart.length > 0)} >
             <BsCart3 />
-            <span>{cart.length}</span>
+            <span>{'!'}</span>
           </StyleIcon>
         </button>
 

@@ -2,6 +2,7 @@ import { useContext, useState, useEffect } from 'react';
 import { BsStarHalf, BsHeartFill, BsCartPlus, BsCartCheckFill } from 'react-icons/bs';
 import { useNavigate } from 'react-router-dom';
 import { Oval } from 'react-loader-spinner';
+import { toast } from 'react-toastify';
 import styled from 'styled-components';
 import axios from 'axios';
 import Swal from 'sweetalert2';
@@ -34,11 +35,10 @@ export default function ProductComponent({ product }) {
     if (token) {
       axios.get(CART_URL, config)
         .then(res => {
-          setCart(res.data.cart.map(product => product.productId));
+          setCart(res.data.cart);
           setLoadingCart(false);
         })
         .catch(err => {
-          console.log(err)
           if (err.response.status !== 401) {
             Swal.fire({
               position: 'top-end',
@@ -133,29 +133,29 @@ export default function ProductComponent({ product }) {
     if (!token) {
       navigate('/login');
     } else {
-      setLoadingCart(true);
-      axios.post(
-        CART_URL, {
-        model: product.model,
-        price: product.price,
-        img: product.image_URL,
-        amount: 1
-      }, config)
-        .then(() => {
-          const newCart = [...cart, product.id];
-          setCart(newCart);
-          setLoadingCart(false);
-        })
-        .catch(err => {
-          setLoadingCart(false);
-          Swal.fire({
-            position: 'top-end',
-            icon: 'error',
-            title: err.response.data.message,
-            showConfirmButton: false,
-            timer: 1500
+      if (!cart.includes(product.id)) {
+        setLoadingCart(true);
+        toast.promise(axios.post(
+          CART_URL, {
+          model: product.model,
+          price: product.price,
+          img: product.image_URL,
+          amount: 1
+        }, config)
+          .then(() => {
+            const newCart = [...cart, product.id];
+            setCart(newCart);
+            setLoadingCart(false);
+          })
+          .catch(() => {
+            setLoadingCart(false);
+          }),
+          {
+            pending: `Adicionando ${product.model}`,
+            success: `${product.model} adicionado no carrinho!`,
+            error: `Erro ao adicionar ${product.model}`
           });
-        });
+      }
     }
   }
 

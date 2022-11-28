@@ -3,9 +3,11 @@ import { FaArrowLeft } from 'react-icons/fa';
 import { useContext, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Oval } from 'react-loader-spinner';
+import { ToastContainer, toast } from 'react-toastify';
 import styled from 'styled-components';
 import axios from 'axios';
 import Swal from 'sweetalert2';
+import 'react-toastify/dist/ReactToastify.css';
 
 import { DataContext } from '../context/Auth.js';
 import { ProductContext } from '../context/ProductContext.js';
@@ -82,7 +84,7 @@ export default function ProductPage() {
     } else {
       if (!cart.includes(product.id)) {
         setLoadingCart(true);
-        axios.post(
+        toast.promise(axios.post(
           CART_URL, {
           model: product.model,
           price: product.price,
@@ -94,15 +96,13 @@ export default function ProductPage() {
             setCart(newCart);
             setLoadingCart(false);
           })
-          .catch(err => {
+          .catch(() => {
             setLoadingCart(false);
-            Swal.fire({
-              position: 'top-end',
-              icon: 'error',
-              title: err.response.data.message,
-              showConfirmButton: false,
-              timer: 1500
-            });
+          }),
+          {
+            pending: `Adicionando ${product.model}`,
+            success: `${product.model} adicionado no carrinho!`,
+            error: `Erro ao adicionar ${product.model}`
           });
       }
     }
@@ -149,6 +149,7 @@ export default function ProductPage() {
   }
   return (
     <StyledProduct>
+      <ToastContainer autoClose={1000} theme='colored' />
       <NavBarComponent />
       <StyledContent>
         <StyledBackButton
@@ -185,15 +186,15 @@ export default function ProductPage() {
             <StyledButtonAddCart
               title={cart.includes(selectedProduct.id) ? 'adicionado ao carrinho' : 'adicionar ao carrinho'}
               inCart={cart.includes(selectedProduct.id)}
-              onClick={() => cartHandle(selectedProduct)} 
+              onClick={() => cartHandle(selectedProduct)}
               disabled={cart.includes(selectedProduct.id)}
             >
-              {(loadingCart ? 
+              {(loadingCart ?
                 spinner() :
-                    <>
-                      {cart.includes(selectedProduct.id) ? 'adicionado ao carrinho' : 'adicionar ao carrinho'}
-                      {cart.includes(selectedProduct.id) ? <BsCartCheckFill /> : <BsCartPlus />}
-                    </>
+                <>
+                  {cart.includes(selectedProduct.id) ? 'adicionado ao carrinho' : 'adicionar ao carrinho'}
+                  {cart.includes(selectedProduct.id) ? <BsCartCheckFill /> : <BsCartPlus />}
+                </>
               )}
             </StyledButtonAddCart>
             <StyledButtonFav

@@ -1,6 +1,7 @@
 import { BsHeartFill, BsCart3, BsSearch } from 'react-icons/bs';
 import { useNavigate, Link } from 'react-router-dom';
-import { useState, useContext } from 'react';
+import { useState, useContext, useEffect } from 'react';
+import axios from 'axios';
 import Swal from 'sweetalert2';
 import styled from 'styled-components';
 
@@ -8,13 +9,40 @@ import logo from '../assets/images/borsalino.png';
 import person from '../assets/images/person-login-icon.png';
 import { ProductContext } from '../context/ProductContext.js';
 import { DataContext } from '../context/Auth.js';
+import { CART_URL } from '../constants.js';
 
 export default function NavBarComponent() {
 
   const { user, token } = useContext(DataContext);
-  const { setSearchQuestion, favorites, cart } = useContext(ProductContext);
+  const { setSearchQuestion, favorites, cart, setCart } = useContext(ProductContext);
   const navigate = useNavigate();
   const [form, setForm] = useState('');
+
+  const config = {
+    headers: {
+      Authorization: `Bearer ${token}`
+    }
+  };
+
+  useEffect(() => {
+    if (token) {
+      axios.get(CART_URL, config)
+        .then(res => {
+          setCart(res.data.cart);
+        })
+        .catch(err => {
+          if (err.response.status !== 401) {
+            Swal.fire({
+              position: 'top-end',
+              icon: 'error',
+              title: err.data,
+              showConfirmButton: false,
+              timer: 1500
+            });
+          }
+        });
+    }
+  }, [cart]);
 
   return (
     <StyledNavBarComponent>
@@ -72,7 +100,7 @@ export default function NavBarComponent() {
         >
           <StyleIcon show={(cart.length > 0)} >
             <BsCart3 />
-            <span>{'!'}</span>
+            <span>{cart.length}</span>
           </StyleIcon>
         </button>
 

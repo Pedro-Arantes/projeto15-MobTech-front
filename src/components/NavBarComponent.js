@@ -18,9 +18,10 @@ export default function NavBarComponent() {
 
   const [form, setForm] = useState('');
 
+  const GoHome = () => navigate("/");
   return (
     <StyledNavBarComponent>
-      <Logo>
+      <Logo onClick={GoHome}>
         <img src={logo} alt='MobTech logo' />
         MobTech
       </Logo>

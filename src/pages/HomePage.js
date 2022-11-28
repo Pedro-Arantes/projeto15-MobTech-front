@@ -6,7 +6,6 @@ import axios from 'axios';
 import Swal from 'sweetalert2';
 
 import { PRODUCTS_URL } from '../constants.js';
-import { DataContext } from '../context/Auth.js';
 import { ProductContext } from '../context/ProductContext.js';
 import NavBarComponent from '../components/NavBarComponent.js';
 import FeaturedProductsComponent from '../components/FeaturedProductsComponent.js';

@@ -1,7 +1,8 @@
 import { BsHeartFill, BsCartPlus, BsStarHalf, BsCartCheckFill, BsHeart } from 'react-icons/bs';
 import { FaArrowLeft } from 'react-icons/fa';
-import { useContext } from 'react';
+import { useContext, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { Oval } from 'react-loader-spinner';
 import styled from 'styled-components';
 import axios from 'axios';
 import Swal from 'sweetalert2';
@@ -23,6 +24,7 @@ export default function ProductPage() {
   } = useContext(ProductContext);
 
   const navigate = useNavigate();
+  const [loadingFav, setLoadingFav] = useState(false);
 
   const config = {
     headers: {
@@ -34,13 +36,16 @@ export default function ProductPage() {
     if (!token) {
       navigate('/login')
     } else {
+      setLoadingFav(true);
       if (!favorites.includes(product.id)) {
         axios.post(`${FAVS_URL}/${product.id}`, {}, config)
           .then(() => {
             const newFavorites = [...favorites, product.id];
             setFavorites(newFavorites);
+            setLoadingFav(false);
           })
           .catch(err => {
+            setLoadingFav(false);
             Swal.fire({
               position: 'top-end',
               icon: 'error',
@@ -54,8 +59,10 @@ export default function ProductPage() {
           .then(() => {
             const newFavorites = favorites.filter(i => i !== product.id);
             setFavorites(newFavorites);
+            setLoadingFav(false);
           })
           .catch(err => {
+            setLoadingFav(false);
             Swal.fire({
               position: 'top-end',
               icon: 'error',
@@ -112,6 +119,20 @@ export default function ProductPage() {
     })
   };
 
+  function spinner() {
+    return (
+      <Oval
+        height={13}
+        width={13}
+        color="#4fa94d"
+        ariaLabel='oval-loading'
+        secondaryColor="#606060"
+        strokeWidth={10}
+        strokeWidthSecondary={10}
+      />
+    );
+  }
+
   if (!selectedProduct) {
     alertError();
     return (
@@ -167,8 +188,12 @@ export default function ProductPage() {
             <StyledButtonFav
               title={favorites.includes(selectedProduct.id) ? 'remover dos favoritos' : 'adicionar aos favoritos'}
               onClick={() => favoritesHandle(selectedProduct)}
+              disabled={loadingFav}
             >
-              {favorites.includes(selectedProduct.id) ? <BsHeartFill /> : <BsHeart />}
+              {(loadingFav ? 
+                spinner() :
+                favorites.includes(selectedProduct.id) ? <BsHeartFill /> : <BsHeart />
+              )}
             </StyledButtonFav>
           </StyledButtons>
         </StyledContainerDescription>

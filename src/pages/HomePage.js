@@ -6,16 +6,19 @@ import axios from 'axios';
 import Swal from 'sweetalert2';
 
 import { PRODUCTS_URL } from '../constants.js';
+import { DataContext } from '../context/Auth.js';
 import { ProductContext } from '../context/ProductContext.js';
 import NavBarComponent from '../components/NavBarComponent.js';
 import FeaturedProductsComponent from '../components/FeaturedProductsComponent.js';
-import ProductsComponent from '../components/ProductsComponent.js';
+import ProductComponent from '../components/ProductComponent.js';
 
 export default function HomePage() {
 
+  const { token } = useContext(DataContext);
+
   const {
     searchQuestion,
-    setSearchQuestion,
+    setSearchQuestion
   } = useContext(ProductContext);
 
   const [products, setProducts] = useState([]);
@@ -23,6 +26,12 @@ export default function HomePage() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(false);
   const [refresh, setRefresh] = useState(0);
+
+  const config = {
+    headers: {
+      Authorization: `Bearer ${token}`
+    }
+  };
 
   useEffect(() => {
     setLoading(true);
@@ -80,7 +89,6 @@ export default function HomePage() {
       <StyledHome>
         <NavBarComponent />
         <StyledContent loadingProp={loading}>
-
           {
             searchQuestion.length > 0 ?
               <>
@@ -102,9 +110,14 @@ export default function HomePage() {
                 featuredProducts={featuredProducts}
               />
           }
-            <ProductsComponent
-              products={products}
-            />
+          <StyledProducts>
+            {products.map(product =>
+              <ProductComponent
+                key={product.id}
+                product={product}
+              />
+            )}
+          </StyledProducts>
         </StyledContent>
       </StyledHome>
     );
@@ -187,4 +200,13 @@ const StyledLoader = styled.section`
   > svg {
     margin: 20px;
   }
+`;
+
+const StyledProducts = styled.section`
+  width: 100%;
+  margin-bottom: 20px;
+  box-sizing: border-box;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
 `;

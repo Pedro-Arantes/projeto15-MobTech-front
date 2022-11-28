@@ -12,7 +12,7 @@ import { DataContext } from '../context/Auth.js';
 export default function NavBarComponent() {
 
   const { user, token } = useContext(DataContext);
-  const { setSearchQuestion, favorites, cart, setSelectedProduct } = useContext(ProductContext);
+  const { setSearchQuestion, favorites, cart } = useContext(ProductContext);
   const navigate = useNavigate();
   const [form, setForm] = useState('');
 
@@ -77,7 +77,7 @@ export default function NavBarComponent() {
         </button>
 
         <button
-          title='Usuário'
+          title={user?.name || 'visitante'}
           onClick={() => {
             token ? navigate('/usuario') : navigate('/login');
           }}
@@ -93,7 +93,6 @@ export default function NavBarComponent() {
 
 const StyledNavBarComponent = styled.nav`
   width: 100%;
-  min-width: 360px;
   height: 80px;
   display: flex;
   align-items: center;
@@ -128,7 +127,7 @@ const Logo = styled.button`
 
   img {
     margin: 0px 2px;
-    width: 50px;
+    width: 22%;
   }
 
   &:hover {
@@ -150,6 +149,7 @@ const Menu = styled.section`
     outline: none;
     border: none;
     margin: 0px 2px;
+    padding: 0px;
     transition: 1s;
   
     &:hover {
@@ -192,20 +192,20 @@ const StyleIcon = styled.div`
 `;
 
 const StyledProfile = styled.div`
-  width: 30px;
-  height: 30px;
+  width: 100%;
+  max-width: 32px;
+  aspect-ratio: 1 / 1;
   background-color: #FFFFFF;
   outline: none;
   border: none;
-  border-radius: 15px;
+  border-radius: 16px;
   transition: 1s;
   display: flex;
   align-items: center;
   justify-content: center;
 
   img {
-    width: 26px;
-    height: 26px;
+    width: 90%;
     border-radius: 13px;
   }
 

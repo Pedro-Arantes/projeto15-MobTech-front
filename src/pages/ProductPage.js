@@ -1,6 +1,6 @@
 import { BsHeartFill, BsCartPlus, BsStarHalf, BsCartCheckFill, BsHeart } from 'react-icons/bs';
 import { FaArrowLeft } from 'react-icons/fa';
-import { useContext, useState } from 'react';
+import { useContext } from 'react';
 import { useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
 import axios from 'axios';
@@ -23,7 +23,6 @@ export default function ProductPage() {
   } = useContext(ProductContext);
 
   const navigate = useNavigate();
-  const [refresh, setRefresh] = useState(0);
 
   const config = {
     headers: {
@@ -107,9 +106,7 @@ export default function ProductPage() {
       cancelButtonText: 'Voltar à página principal',
       confirmButtonText: 'Tentar novamente',
     })).then((result) => {
-      if (result.isConfirmed) {
-        setRefresh(Math.random());
-      } else {
+      if (!result.isConfirmed) {
         navigate('/');
       }
     })
@@ -129,7 +126,9 @@ export default function ProductPage() {
     <StyledProduct>
       <NavBarComponent />
       <StyledContent>
-        <StyledBackButton onClick={() => navigate('/')}>
+        <StyledBackButton 
+          title={'Voltar para página principal'}
+          onClick={() => navigate('/')}>
           <FaArrowLeft />
         </StyledBackButton>
         <StyledImage
@@ -235,7 +234,7 @@ const StyledBackButton = styled.button`
 const StyledImage = styled.img`
   width: 50%;
   height: 25%;
-  margin: auto;
+  margin: 20px auto;
   object-fit: contain;
   overflow: hidden;
 `;
@@ -245,6 +244,7 @@ const StyledContainerDescription = styled.section`
   display: flex;
   padding: 20px 40px;
   flex-direction: column;
+  text-align: justify;
   align-items: center;
   justify-content: space-evenly;
   background: #202024;

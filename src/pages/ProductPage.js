@@ -270,7 +270,7 @@ const StyledBackButton = styled.button`
 const StyledImage = styled.img`
   width: 50%;
   height: 25%;
-  margin: 20px auto;
+  margin: auto;
   object-fit: contain;
   overflow: hidden;
 `;

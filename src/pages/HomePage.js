@@ -129,7 +129,7 @@ const StyledHome = styled.main`
 `;
 
 const StyledContent = styled.section`
-  width: 90%;
+  width: 95%;
   height: 100%;
   min-height: 100vh;
   padding-top: 80px;

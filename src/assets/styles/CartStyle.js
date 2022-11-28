@@ -99,7 +99,7 @@ button{
 }
 
 svg{
-    font-size: 20px;
+    font-size: 30px;
 
     margin-top: 20px;
     margin-right: 5px;
@@ -138,11 +138,12 @@ display: flex;
 align-items: center;
 gap: 18px;
 width: 100%;
+
 button{
     display: flex;
     align-items: center;
     justify-content: center;
-    width: 20px;
+    width: 30px;
     height: 70%;
     border-radius: 100%;
 
@@ -153,5 +154,10 @@ button:active {
   box-shadow: 0px 15px 20px rgba(46, 229, 157, 0.4);
  color: black;
   transform: translateY(-2px);
+}
+svg{
+    font-size: 40px;
+    margin-top: 0px;
+    margin-right: 0px;
 }
 `

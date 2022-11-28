@@ -1,6 +1,6 @@
 import styled from 'styled-components';
 
-export const  MainStyled = styled.main `
+export const MainStyled = styled.main`
 height: 100%;
 width: 100%;
 display: flex;
@@ -31,7 +31,7 @@ h1{
 }
 `
 
-export const BalanceStyled = styled.article `
+export const BalanceStyled = styled.article`
 height: 20%;
 width: 100%;
 display: flex;
@@ -52,11 +52,31 @@ bottom: 0;
 background-color: #5a4cae;
 box-shadow: 0px 15px 20px rgba(0, 0, 0, 0.3);
 opacity: 0.9;
+
+@media (max-width: 600px) {
+    height: 20%;
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    justify-content: center;
+    align-items: center;
+
+}
 div{
     width: 100%;
-
+    
     display: flex;
-    justify-content: space-between;
+    align-items: center;
+    justify-content: center;
+    gap: 400px;
+
+    @media (max-width: 600px) {
+        width: 100%;
+        gap: 0px;
+        display: flex;
+        justify-content: space-between;
+    }
 }
 button{
     background-color: #6b657f;
@@ -79,7 +99,7 @@ button:active {
 `
 export const CartItemStyled = styled.div`
 display: flex;
-justify-content: space-between;
+gap: 30px;
 align-items: center;
 margin-left: 5px;
 margin-right: 5px;
@@ -87,8 +107,22 @@ margin-right: 5px;
 border-style: solid;
 
 
-height: 50%;
-width: 350px;
+height: 25%;
+width: 70%;
+
+@media (max-width: 600px) {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-left: 5px;
+    margin-right: 5px;
+
+    border-style: solid;
+
+
+    height: 50%;
+    width: 350px;
+}
 
 
 button{
@@ -110,16 +144,29 @@ svg{
 }
 
 img{
-    height: 50%;
-    width: 50%;
+    height: 25%;
+    width: 25%;
+    @media (max-width: 600px) {
+        height: 50%;
+        width: 50%;
+    }
 }
 `
 export const CartContent = styled.div`
     display: flex;
-    gap: 10px;
-    width: 70%;
+    gap: 80px;
+    width: 80%;
     height: 100%;
-    max-height: min-content;
+  
+
+    @media (max-width: 600px) {
+        display: flex;
+        gap: 10px;
+        width: 70%;
+        height: 100%;
+        max-height: min-content;
+    }
+    
    
 `
 export const CartDescription = styled.div`
@@ -130,9 +177,20 @@ export const CartDescription = styled.div`
         justify-content: center;
 
         width: 100%;
-        height: 100px;
+        height: 200px;
 
         font-size: 20px;
+        @media (max-width: 600px) {
+            display: flex;
+            gap: 10px;
+            flex-direction: column;
+            justify-content: center;
+
+            width: 100%;
+            height: 100px;
+
+            font-size: 20px;
+        }
 `
 
 export const CounterDiv = styled.div`
@@ -141,6 +199,8 @@ display: flex;
 align-items: center;
 gap: 18px;
 width: 100%;
+
+
 
 button{
     display: flex;

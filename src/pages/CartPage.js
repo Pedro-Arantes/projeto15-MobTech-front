@@ -76,7 +76,7 @@ export default function CartPage() {
         }
         getCart()
     },[update,test])
-    console.log(update)
+
     
     useEffect(() => {
         const interval = setInterval(() => calcTotal(cartArray), 1000);

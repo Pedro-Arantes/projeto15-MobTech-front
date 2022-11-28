@@ -15,12 +15,7 @@ import ProductsComponent from '../components/ProductsComponent.js';
 export default function FavoritesPage() {
 
   const { user, token } = useContext(DataContext);
-  const {
-    favorites,
-    setFavorites,
-    cart,
-    setCart
-  } = useContext(ProductContext);
+  const { favorites } = useContext(ProductContext);
 
   const navigate = useNavigate();
   const [favProducts, setFavProducts] = useState([]);
@@ -95,7 +90,9 @@ export default function FavoritesPage() {
       <StyledFavorites>
         <NavBarComponent />
         <StyledContent loadingProp={loading}>
-        <StyledBackButton onClick={() => navigate('/')}>
+        <StyledBackButton 
+          title={'Voltar para página principal'}
+          onClick={() => navigate('/')}>
           <FaArrowLeft />
         </StyledBackButton>
           <StyledMessage>
@@ -106,10 +103,6 @@ export default function FavoritesPage() {
           </StyledMessage>
           <ProductsComponent
             products={favProducts}
-            favorites={favorites}
-            setFavorites={setFavorites}
-            cart={cart}
-            setCart={setCart}
           />
         </StyledContent>
       </StyledFavorites>

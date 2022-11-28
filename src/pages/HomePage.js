@@ -1,10 +1,9 @@
 import { useState, useEffect, useContext } from 'react';
 import { TailSpin } from 'react-loader-spinner';
-import { BsArrowLeftCircleFill } from 'react-icons/bs';
+import { FaArrowLeft } from 'react-icons/fa';
 import styled from 'styled-components';
 import axios from 'axios';
 import Swal from 'sweetalert2';
-import InfiniteScroll from 'react-infinite-scroll-component';
 
 import { PRODUCTS_URL } from '../constants.js';
 import { ProductContext } from '../context/ProductContext.js';
@@ -38,23 +37,6 @@ export default function HomePage() {
         setError(true);
       });
   }, [refresh, searchQuestion]);
-
-  function fetchMoreData() {
-
-  };
-
-  function messageLoader() {
-    return (
-      <StyledLoader>
-        Carregando mais ofertas...
-        <TailSpin
-          height='40'
-          width='40'
-          color='#73C800'
-        />
-      </StyledLoader>
-    );
-  }
 
   async function alertError() {
     await (Swal.fire({
@@ -98,39 +80,31 @@ export default function HomePage() {
       <StyledHome>
         <NavBarComponent />
         <StyledContent loadingProp={loading}>
+
           {
             searchQuestion.length > 0 ?
-              <StyledMessageSearch>
-                {'A sua busca por '}
-                <span>'{searchQuestion}'</span>
-                {' obteve '}
-                <span>{products.length}</span>
-                {' resultados:'}
-              </StyledMessageSearch>
+              <>
+                <StyledBackButton
+                  title={'Voltar para página principal'}
+                  onClick={() => setSearchQuestion('')}>
+                  <FaArrowLeft />
+                </StyledBackButton>
+                <StyledMessageSearch>
+                  {'A sua busca por '}
+                  <span>'{searchQuestion}'</span>
+                  {' obteve '}
+                  <span>{products.length}</span>
+                  {' resultados:'}
+                </StyledMessageSearch>
+              </>
               :
               <FeaturedProductsComponent
                 featuredProducts={featuredProducts}
               />
           }
-          <InfiniteScroll
-            dataLength={products.length}
-            next={fetchMoreData}
-            hasMore={false}
-            loader={messageLoader()}
-          >
             <ProductsComponent
               products={products}
             />
-          </InfiniteScroll>
-          {
-            searchQuestion.length > 0 ?
-              <ButtonReset onClick={() => setSearchQuestion('')}>
-                <BsArrowLeftCircleFill />
-                Voltar
-              </ButtonReset>
-              :
-              ''
-          }
         </StyledContent>
       </StyledHome>
     );
@@ -162,6 +136,30 @@ const StyledContent = styled.section`
   flex-direction: column;
   align-items: ${props => props.loadingProp ? 'center' : 'default'};
   justify-content: ${props => props.loadingProp ? 'center' : 'default'};
+  position: relative;
+`;
+
+const StyledBackButton = styled.button`
+  position: absolute;
+  top: 100px;
+  left: 0;
+  width: 38px;
+  height: 33px;
+  background: linear-gradient(180deg, #6F7580 -53%, rgba(31, 34, 37, 0) 200%);
+  border: 0.7px solid rgba(55, 73, 87, 0.2);
+  filter: drop-shadow(0px 12px 27px rgba(0, 0, 0, 0.25));
+  border-radius: 6px;
+  transition: 1s;
+
+  > svg {
+    color: #73C800;
+    font-size: 15px;
+  }
+
+  &:hover {
+    background: linear-gradient(180deg, #8c96a5 -53%, rgba(31, 34, 37, 0) 200%);
+    transform: scale(1.1);
+  }
 `;
 
 const StyledMessageSearch = styled.span`
@@ -188,33 +186,5 @@ const StyledLoader = styled.section`
 
   > svg {
     margin: 20px;
-  }
-`;
-
-const ButtonReset = styled.button`
-  height: 40px;
-  width: 150px;
-  margin-bottom: 150px;
-  font-family: 'Montserrat', sans-serif;
-  font-weight: 600;
-  font-size: 20px;
-  display: flex;
-  align-items: center;
-  justify-content: space-evenly;
-  background-color: rgba(115, 200, 0, .4);
-  color: #FFFFFF;
-  border: none;
-  outline: none;
-  border-radius: 15px;
-  padding: 5px;
-  transition: .7s;
-
-  > svg {
-    margin: 10px
-  }
-
-  &:hover {
-    background-color: rgba(115, 200, 0, .9);
-    transform: scale(1.1);
   }
 `;

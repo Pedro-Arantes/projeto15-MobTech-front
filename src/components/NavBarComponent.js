@@ -6,16 +6,14 @@ import styled from 'styled-components';
 
 import logo from '../assets/images/borsalino.png';
 import person from '../assets/images/person-login-icon.png';
-import { NavBarContext } from '../context/NavBarContext.js';
+import { ProductContext } from '../context/ProductContext.js';
 import { DataContext } from '../context/Auth.js';
 
 export default function NavBarComponent() {
 
   const { user, token } = useContext(DataContext);
-
+  const { setSearchQuestion, favorites, cart, setSelectedProduct } = useContext(ProductContext);
   const navigate = useNavigate();
-  const { setSearchQuestion, favorites, cart } = useContext(NavBarContext);
-
   const [form, setForm] = useState('');
 
   return (

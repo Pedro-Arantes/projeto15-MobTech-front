@@ -1,6 +1,6 @@
 import { useState, useEffect, useContext } from 'react';
 import { TailSpin } from 'react-loader-spinner';
-import { BsArrowLeftCircleFill } from 'react-icons/bs';
+import { FaArrowLeft } from 'react-icons/fa';
 import { useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
 import axios from 'axios';
@@ -8,7 +8,7 @@ import Swal from 'sweetalert2';
 
 import { FAVS_URL } from '../constants.js';
 import { DataContext } from '../context/Auth.js';
-import { NavBarContext } from '../context/NavBarContext.js';
+import { ProductContext } from '../context/ProductContext.js';
 import NavBarComponent from '../components/NavBarComponent.js';
 import ProductsComponent from '../components/ProductsComponent.js';
 
@@ -20,7 +20,7 @@ export default function FavoritesPage() {
     setFavorites,
     cart,
     setCart
-  } = useContext(NavBarContext);
+  } = useContext(ProductContext);
 
   const navigate = useNavigate();
   const [favProducts, setFavProducts] = useState([]);
@@ -95,6 +95,9 @@ export default function FavoritesPage() {
       <StyledFavorites>
         <NavBarComponent />
         <StyledContent loadingProp={loading}>
+        <StyledBackButton onClick={() => navigate('/')}>
+          <FaArrowLeft />
+        </StyledBackButton>
           <StyledMessage>
             <span>{user.name}</span>
             {', você tem '}
@@ -108,11 +111,6 @@ export default function FavoritesPage() {
             cart={cart}
             setCart={setCart}
           />
-
-          <ButtonReset onClick={() => navigate('/')}>
-            <BsArrowLeftCircleFill />
-            Voltar
-          </ButtonReset>
         </StyledContent>
       </StyledFavorites>
     );
@@ -142,12 +140,37 @@ const StyledContent = styled.section`
   color: #FFFFFF;
   display: flex;
   flex-direction: column;
-  align-items: ${props => props.loadingProp ? 'center' : 'default'};
+  align-items: center;
   justify-content: ${props => props.loadingProp ? 'center' : 'default'};
+  position: relative;
+`;
+
+const StyledBackButton = styled.button`
+  position: absolute;
+  top: 100px;
+  left: 0;
+  width: 38px;
+  height: 33px;
+  background: linear-gradient(180deg, #6F7580 -53%, rgba(31, 34, 37, 0) 200%);
+  border: 0.7px solid rgba(55, 73, 87, 0.2);
+  filter: drop-shadow(0px 12px 27px rgba(0, 0, 0, 0.25));
+  border-radius: 6px;
+  transition: 1s;
+
+  > svg {
+    color: #73C800;
+    font-size: 15px;
+  }
+
+  &:hover {
+    background: linear-gradient(180deg, #8c96a5 -53%, rgba(31, 34, 37, 0) 200%);
+    transform: scale(1.1);
+  }
+
 `;
 
 const StyledMessage = styled.span`
-  width: 100%;
+  width: 80%;
   height: 70px;
   padding: 25px 0px;
   font-size: 18px;
@@ -170,33 +193,5 @@ const StyledLoader = styled.section`
 
   > svg {
     margin: 20px;
-  }
-`;
-
-const ButtonReset = styled.button`
-  height: 40px;
-  width: 150px;
-  margin-bottom: 150px;
-  font-family: 'Montserrat', sans-serif;
-  font-weight: 600;
-  font-size: 20px;
-  display: flex;
-  align-items: center;
-  justify-content: space-evenly;
-  background-color: rgba(115, 200, 0, .4);
-  color: #FFFFFF;
-  border: none;
-  outline: none;
-  border-radius: 15px;
-  padding: 5px;
-  transition: .7s;
-
-  > svg {
-    margin: 10px
-  }
-
-  &:hover {
-    background-color: rgba(115, 200, 0, .9);
-    transform: scale(1.1);
   }
 `;

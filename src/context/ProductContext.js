@@ -1,24 +1,27 @@
 import { createContext, useState } from 'react';
 
-export const NavBarContext = createContext({})
+export const ProductContext = createContext({})
 
-export default function NavBarProvider({ children }) {
+export default function ProductProvider({ children }) {
   const [searchQuestion, setSearchQuestion] = useState('');
   const [favorites, setFavorites] = useState([]);
   const [cart, setCart] = useState([]);
+  const [selectedProduct, setSelectedProduct] = useState();
 
   return (
-    <NavBarContext.Provider value={
+    <ProductContext.Provider value={
       {
         searchQuestion,
         setSearchQuestion,
         favorites,
         setFavorites,
         cart,
-        setCart
+        setCart,
+        selectedProduct,
+        setSelectedProduct
       }
     }>
       {children}
-    </NavBarContext.Provider>
+    </ProductContext.Provider>
   );
 }

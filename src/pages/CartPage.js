@@ -5,7 +5,7 @@ import { DataContext } from "../context/Auth";
 import { MainStyled, CartStyled, BalanceStyled } from "../assets/styles/CartStyle"
 import CartItem from "../components/CartItem";
 import NavBarComponent from "../components/NavBarComponent";
-
+import Swal from 'sweetalert2'
 import { CART_URL } from '../constants.js';
 
 export default function CartPage() {
@@ -58,10 +58,15 @@ export default function CartPage() {
             }
 
             const tratarErro = (resp) => {
-                console.log(resp)
-                alert(resp.response.data)
-                navigate("/")
-                window.location.reload()
+                //console.log(resp)
+                Swal.fire({
+                    icon: "warning",
+                    text: "Acesso Não autorizado!"
+                  }); 
+                  setTimeout(()=>{
+                    navigate("/")
+                    window.location.reload()
+                  },2000)
             }
 
             const req = axios.get(CART_URL, config);

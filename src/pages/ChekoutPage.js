@@ -1,6 +1,6 @@
 import axios from "axios";
 import {  useNavigate } from "react-router-dom";
-import { useState, useContext, } from 'react';
+import { useState, useContext,useEffect } from 'react';
 import { DataContext } from "../context/Auth";
 import NavBarComponent from "../components/NavBarComponent";
 import { MainStyled } from "../assets/styles/CartStyle"
@@ -19,9 +19,21 @@ export default function CartPage() {
     const navigate = useNavigate();
 /*     const token = "540e441c-9227-4749-ba22-9fe8204e7dfc"
  */
-    const FinishBuy = (stat) =>{
+    const VerifyToken = () =>{
+     if (token === undefined) {
+        Swal.fire({
+            icon: "warning",
+            text: "Acesso Não autorizado!"
+          }); 
+          setTimeout(()=>{
+            navigate("/")
+            window.location.reload()
+          },2000)
+     }
+    }
+    const FinishBuy = () =>{
 
-        if (stat === "buy") {
+        
 
               const postPurchase = () =>{
 
@@ -37,9 +49,10 @@ export default function CartPage() {
                 }
         
                 const tratarSucesso = (resposta) => {
-                    //console.log(resposta)
+                    console.log(resposta)
                     Swal.fire({
                         icon: "success",
+                        text: "Entrega sendo preparada para envio!"
                       });  
                     navigate("/")
                 }
@@ -55,24 +68,38 @@ export default function CartPage() {
                 requisicao.catch(tratarErro)
               }
               postPurchase()
-        }else{
-            Swal.fire({
-                icon: "error",
-              });
-        }
+        
         
     }
+
+    const CancelPurchase = () =>{
+        
+        Swal.fire({
+            icon: "error",
+            text: "Compra cancelada com Sucesso!"
+          });
+          navigate("/carrinho")
+    }
+    const submit = (e) => {
+        FinishBuy();
+        e.preventDefault();
+        //navigate("/home")
+    }
+    useEffect(()=>{
+        VerifyToken()
+    },[])
+    
     return (
         <MainStyled>
             <NavBarComponent/>
-            <FormCheckout>
+            <FormCheckout id="form"  onSubmit={ submit}>
                 <div>
                     <BsTelephone/>
-                    <input required placeholder="Tel Contato" value={tell} onChange={e => setTell(e.target.value)}></input>
+                    <input required placeholder="Tel Contato" value={tell} onChange={e => setTell(e.target.value)} minLength= "11"></input>
                 </div>
                 <div>
                     <HiOutlineMapPin/>
-                    <input required placeholder="Endereço" value={adress} onChange={e => setAdress(e.target.value)}></input>
+                    <input required  minLength= "14" maxLength="60" placeholder="Endereço" value={adress} onChange={e => setAdress(e.target.value)}></input>
                 </div>
                 
                 
@@ -83,8 +110,8 @@ export default function CartPage() {
                     <p>{total.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}</p>
                 </TotalDiv>
                 <BtnsDiv>
-                <BtnBuy onClick={() => FinishBuy("buy")}>Finalizar Compra</BtnBuy>
-                <BtnCancel onClick={() => FinishBuy("cancel")}>Cancelar Compra</BtnCancel>
+                <BtnBuy  type="submit" form="form" >Finalizar Compra</BtnBuy>
+                <BtnCancel  onClick={CancelPurchase}>Cancelar Compra</BtnCancel>
                 </BtnsDiv>
                 
             </BalanceStyled>

@@ -1,8 +1,9 @@
-import { useState, useContext, useEffect } from 'react';
+//import { useState, useContext, useEffect } from 'react';
 import axios from "axios";
 import {  CartItemStyled, CartDescription,CounterDiv,CartContent } from "../assets/styles/CartStyle"
 import {FiTrash2} from  'react-icons/fi'
-
+import { TiPlus } from "react-icons/ti";
+import { TiMinus } from "react-icons/ti";
 import { CART_URL } from '../constants.js';
 
 export default function CartItem ({objt,setUpdate,token,navigate,setTeste,teste}){
@@ -110,9 +111,9 @@ export default function CartItem ({objt,setUpdate,token,navigate,setTeste,teste}
                 <p>{model}</p>
                 <p>{real}</p>
                 <CounterDiv>
-                    <button onClick={()=>SumSubAmount("minus")}>-</button>
+                    <button onClick={()=>SumSubAmount("minus")}><TiMinus/></button>
                     <p>{qnt?.toString()}</p>
-                    <button onClick={()=>SumSubAmount("plus")}>+</button>
+                    <button onClick={()=>SumSubAmount("plus")}><TiPlus/></button>
                 </CounterDiv>
                 
             </CartDescription>

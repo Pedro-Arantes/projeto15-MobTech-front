@@ -7,7 +7,6 @@ display: flex;
 flex-direction: column;
 justify-content: center;
 color: white;
-
 margin-top: 100px;
 font-family: 'Montserrat', sans-serif;
 
@@ -20,11 +19,15 @@ align-items: center;
 gap: 20px;
 
 height: 50%;
+width: 100%;
 margin-bottom: 150px;
 
 h1{
     font-size: 20px;
     font-weight: 600;
+    text-align: center;
+
+    margin-left: 40px;
 }
 `
 
@@ -99,7 +102,7 @@ button{
 }
 
 svg{
-    font-size: 20px;
+    font-size: 30px;
 
     margin-top: 20px;
     margin-right: 5px;
@@ -138,11 +141,12 @@ display: flex;
 align-items: center;
 gap: 18px;
 width: 100%;
+
 button{
     display: flex;
     align-items: center;
     justify-content: center;
-    width: 20px;
+    width: 30px;
     height: 70%;
     border-radius: 100%;
 
@@ -154,4 +158,27 @@ button:active {
  color: black;
   transform: translateY(-2px);
 }
+svg{
+    font-size: 40px;
+    margin-top: 0px;
+    margin-right: 0px;
+}
+`
+export const InfoButtton = styled.button`
+width: 30px;
+height: 30px;
+
+position: absolute;
+top: 95px;
+left: 5px;
+display: flex;
+align-items: center;
+justify-content: center;
+background-color: #DDFF0D ;
+border-radius: 100%;
+border-style: none;
+
+font-size: 30px;
+font-weight: 600;
+
 `

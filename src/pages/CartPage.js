@@ -2,11 +2,12 @@ import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import { useState, useContext, useEffect } from 'react';
 import { DataContext } from "../context/Auth";
-import { MainStyled, CartStyled, BalanceStyled } from "../assets/styles/CartStyle"
+import { MainStyled, CartStyled, BalanceStyled, InfoButtton } from "../assets/styles/CartStyle"
 import CartItem from "../components/CartItem";
 import NavBarComponent from "../components/NavBarComponent";
-
+import Swal from 'sweetalert2'
 import { CART_URL } from '../constants.js';
+import {AiOutlineQuestion} from  'react-icons/ai'
 
 export default function CartPage() {
 
@@ -58,10 +59,15 @@ export default function CartPage() {
             }
 
             const tratarErro = (resp) => {
-                console.log(resp)
-                alert(resp.response.data)
-                navigate("/")
-                window.location.reload()
+                //console.log(resp)
+                Swal.fire({
+                    icon: "warning",
+                    text: "Acesso Não autorizado!"
+                  }); 
+                  setTimeout(()=>{
+                    navigate("/")
+                    window.location.reload()
+                  },2000)
             }
 
             const req = axios.get(CART_URL, config);
@@ -77,13 +83,21 @@ export default function CartPage() {
         return  clearInterval(interval);
       }, []);
 
+      const PopInfo = () =>{
+        Swal.fire({
+            icon: "info",
+            text: "Para Voltar Clique no Logo!"
+          }); 
+
+      }
+
     return (
         <MainStyled>
             <NavBarComponent/>
             <CartStyled>
-                <h1>Bem vindo ao seu carrinho!</h1>
+                <h1>{cartArray.length<1 ? "Seu carrinho está Vazio,Clique na Logo para voltar!" : "Bem vindo ao seu carrinho!"}</h1>
                 {cartArray?.map((item,id)=><CartItem navigate={navigate} setUpdate={setUpdate} setTeste={setTeste} teste={test} objt={item} token={token}key={id}/>)}
-                
+        
             </CartStyled>
             <BalanceStyled>
                 <div>
@@ -93,6 +107,9 @@ export default function CartPage() {
                 
                 <button onClick={NextPage}>Comprar</button>
             </BalanceStyled>
+            <InfoButtton onClick={PopInfo}>
+                <AiOutlineQuestion/>
+            </InfoButtton  >
         </MainStyled>
     )
 }
